@@ -13,7 +13,7 @@ Rassemblement de tous les programmes développés pour respecter le cahier des c
 - [Slave](./Cartes/Slave) : 8051
   - **Communications** : [SPI](./Communication/SPI), [Radio](./Communication/Radio)
   - **Actionneurs** : [Serializer](./Actionneurs/Serializer), [Servomoteur](./Actionneurs/Servomoteur), [Pointeur lumineux](./Actionneurs/Pointeur_lumineux)
-  - **Capteurs** : [Caméra](./Capteurs/Caméra)
+  - **Capteurs** : [Caméra](./Capteurs/Camera)
 
 - [STM32](./Cartes/STM32) :
   - **Communications** : [???](./Communication/???), [Bluetooth](./Communication/Bluetooth), [SD](./Communication/SD)
@@ -32,7 +32,7 @@ Rassemblement de tous les programmes développés pour respecter le cahier des c
 - [Servomoteur](./Actionneurs/Servomoteur) : contrôle de l'orientation d'un servomoteur
 
 ## Capteurs
-- [Caméra](./Capteurs/Caméra) : utilisation de la caméra pour les prises de vue
+- [Caméra](./Capteurs/Camera) : utilisation de la caméra pour les prises de vue
 - [Courant](./Capteurs/Courant) : mesure du courant par une résistance de Shunt
 - [Infrarouge](./Capteurs/Infrarouge) : mesure d'une distance par télémètre infrarouge
 - [Microphone](./Capteurs/Microphone) : acquisition d'un signal sonore
@@ -41,7 +41,7 @@ Rassemblement de tous les programmes développés pour respecter le cahier des c
 
 
 ## Communication
-- [Interpréteur de message](./Communication/Interpréteur_message) : interprète un message reçu par la liaison *UART* ou *SPI* pour en extraire la **commande** ou l'**information**
+- [Interpréteur de message](./Communication/Interpreteur_message) : interprète un message reçu par la liaison *UART* ou *SPI* pour en extraire la **commande** ou l'**information**
 - [Bluetooth](./Communication/Bluetooth) : communication *Bluetooth* entre la **STM32** et la **Centrale de Commande**
 - [Radio](./Communication/Radio) : communication *Radio* entre la **Carte Slave** et la **Cible**
 - [SD](./Communication/SD) : sauvegarde de données sur une **carte SD**
