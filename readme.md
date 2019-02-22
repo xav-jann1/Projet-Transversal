@@ -41,7 +41,7 @@ Rassemblement de tous les programmes développés pour respecter le cahier des c
 
 
 ## Communication
-- [Interpréteur de message](./Communication/Interpreteur_message) : interprète un message reçu par la liaison *UART* ou *SPI* pour en extraire la **commande** ou l'**information**
+- [Parseur de messages](./Communication/Parseur_messages) : extrait le commande d'un message reçu par la liaison *UART* ou *SPI*
 - [Bluetooth](./Communication/Bluetooth) : communication *Bluetooth* entre la **STM32** et la **Centrale de Commande**
 - [Radio](./Communication/Radio) : communication *Radio* entre la **Carte Slave** et la **Cible**
 - [SD](./Communication/SD) : sauvegarde de données sur une **carte SD**
