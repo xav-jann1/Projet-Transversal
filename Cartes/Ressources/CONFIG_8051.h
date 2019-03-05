@@ -10,6 +10,9 @@ void CONFIG_externClock();
 // Autorise les interruptions:
 void CONFIG_activeInterrupts();
 
+// Active le Crossbar:
+void CONFIG_activeCrossbar();
+
 // Séquence d'initialisation de la carte:
 void CONFIG_init();
 

@@ -16,7 +16,7 @@ void main(void) {
   CONFIG_activeInterrupts();
 
   // Activation du crossbar:
-  XBR2 = 1 << 6; // (à vérifier si c'est utile)
+  CONFIG_activeCrossbar();
 
   // Message de démarrage:
   UART0_send("DEMARRAGE\n\r");

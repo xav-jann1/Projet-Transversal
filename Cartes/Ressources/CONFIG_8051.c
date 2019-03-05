@@ -23,12 +23,12 @@ void CONFIG_externClock() {
 }
 
 // Autorise les interruptions:
-void CONFIG_activeInterrupts() {
-	EA = 1;
-}
+void CONFIG_activeInterrupts() { EA = 1; }
+
+// Active le Crossbar:
+void CONFIG_activeCrossbar() { XBR2 |= 1 << 6; }
 
 void CONFIG_init() {
   // interrupts
   // crossbar
 }
-

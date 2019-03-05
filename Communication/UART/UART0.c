@@ -52,7 +52,7 @@ void TIMER2_config() {
   TCLK0 = 1;
   RCLK0 = 1;
 
-  // Configuration du baud rate:
+  // Configuration du baud rate (19200):
   RCAP2H = 0xFF;
   RCAP2L = 0xDC;
 
