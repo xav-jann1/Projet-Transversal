@@ -61,7 +61,7 @@ void TIMER2_config() {
 }
 
 /**
- * Fonction de mise à jour de l'UART0 
+ * Fonction de mise à jour de l'UART0
  */
 void UART0_update() {
   // Traitement de la ligne:
@@ -83,7 +83,8 @@ void UART0_update() {
  */
 void UART0_sendChar(char c) {
   // Attend la fin de l'envoie d'un caractère:
-  while (UART0_transmit_busy == 1) ;
+  while (UART0_transmit_busy == 1)
+    ;
   UART0_transmit_busy = 1;
 
   // Charge et envoie le caractère:
@@ -104,14 +105,18 @@ void UART0_send(char* string) {
 
 /**
  * Définit la couleur des prochains caractères envoyés par l'UART0
- * @param {char} color : indice de la couleur 
+ * @param {char} color : indice de la couleur
  */
 void UART0_setColor(char color) {
   UART0_sendChar(0x1b);
-  if (color == 0) UART0_send("[0m");
-  else if (color == 1) UART0_send("[32m");
-  else if (color == 2) UART0_send("[31m");
-  else if (color == 3) UART0_send("[33m");
+  if (color == 0)
+    UART0_send("[0m");
+  else if (color == 1)
+    UART0_send("[32m");
+  else if (color == 2)
+    UART0_send("[31m");
+  else if (color == 3)
+    UART0_send("[33m");
 }
 
 /**
@@ -133,7 +138,7 @@ void UART0_interrupt() interrupt 4 {
     // Vérification du caractère:
     if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
         (c >= '0' && c <= '9') || c == ' ' || c == ':') {
-      // Ajoute le caract�re au buffer:
+      // Ajoute le caractère au buffer:
       UART0_receive_buffer[UART0_receive_i] = c;
       UART0_receive_i++;
 
@@ -152,23 +157,20 @@ void UART0_interrupt() interrupt 4 {
       }
 
       UART0_sendChar(c);
-
-      // RAZ du flag:
-      RI0 = 0;
     }
 
     // Si fin de la ligne:
     else if (c == '\r') {
-      // Ajoute le caract�re de fin:
+      // Ajoute le caractère de fin:
       UART0_receive_buffer[UART0_receive_i] = '\0';
       UART0_receive_i = 0;
-
-      // RAZ du flag:
-      RI0 = 0;
 
       // Interprète le message reçu (dans UART0_update):
       UART0_receive_handle = 1;
     }
+
+    // RAZ du flag:
+    RI0 = 0;
   }
 }
 
@@ -179,7 +181,7 @@ void UART0_interrupt() interrupt 4 {
 void UART0_receive_handle_buffer(char* buffer) {
   UART0_send("\r\n");
 
-  // Renvoie la ligne re�ue:
+  // Renvoie la ligne reçue:
   UART0_send(buffer);
 
   UART0_send("\r\n");
