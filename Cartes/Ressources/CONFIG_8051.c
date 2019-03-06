@@ -28,7 +28,17 @@ void CONFIG_activeInterrupts() { EA = 1; }
 // Active le Crossbar:
 void CONFIG_activeCrossbar() { XBR2 |= 1 << 6; }
 
+// Séquence d'initialisation du 8051:
 void CONFIG_init() {
-  // interrupts
-  // crossbar
+  // Dévalidation du watchdog:
+  CONFIG_watchdog();
+
+  // Utilisation de l'horloge externe:
+  CONFIG_externClock();
+
+  // Activation des interrutions:
+  CONFIG_activeInterrupts();
+
+  // Activation du crossbar:
+  CONFIG_activeCrossbar();
 }
