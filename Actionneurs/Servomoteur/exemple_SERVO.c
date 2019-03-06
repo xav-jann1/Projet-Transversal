@@ -1,10 +1,12 @@
-#include "CONFIG_8051.h"
+#include "../../Cartes/Ressources/CONFIG_8051.h"
+#include "../../Cartes/Ressources/TIME_8051.h"
 #include "SERVO.h"
-#include "TIME_8051.h"
 
+int i = 0;
 void main() {
   // Initialisation du 8051:
   CONFIG_init();
+  TIME_init();
 
   // Initialisation du servomoteur:
   SERVO_init();
@@ -30,17 +32,22 @@ void main() {
    */
 
   // Mouvement progressif de gauche à droite:
-  for (int i = 1; i <= 10; i++) {
-    SERVO_pos(180 * i / 10.0);
+  for (i = 0; i <= 180; i += 10) {
+    SERVO_pos(i);
     TIME_wait(500);
   }
 
   // Mouvement progressif de droite à gauche:
-  for (int i = 1; i < 10; i++) {
-    SERVO_pos(180 - 180 * i / 10.0);
+  for (i = 180; i > 0; i -= 10) {
+    SERVO_pos(i);
     TIME_wait(500);
   }
 
-  while (1)
-    ;
+  // Alterne entre 0° et 180°:
+  while (1) {
+    SERVO_pos(0);
+    TIME_wait(5000);
+    SERVO_pos(180);
+    TIME_wait(5000);
+  }
 }

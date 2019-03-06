@@ -4,7 +4,7 @@
 #define SYSCLK 22118400
 
 /**
- * Variables de TIME: 
+ * Variables de TIME:
  */
 
 // Indique si 1 ms s'est réalisée:
@@ -18,13 +18,16 @@ unsigned int TIME_counter_1ms = 0;
 
 /**
  * Configuration du Timer 0 pour déclencher une interruption toutes les ms
- * Registres modifiés: TMOD (T0M0,T0M1), TL0, TH0,
+ * Registres modifiés: TMOD (T0M0,T0M1), CKCON(T0M), TL0, TH0,
  *                     IE(PT0), IP(ET0), TCON(TF0,TR0)
  */
 void TIME_init() {
   // Timer 0 en mode 1: 16-bit Timer
   TMOD |= (1 << 0);   // T0M0 = 1
   TMOD &= ~(1 << 1);  // T0M1 = 0
+
+  // Utilise SYSCLK:
+  CKCON |= 1 << 3;  // T0M = 1
 
   // Valeur de recharge du Timer:
   TIME_counter_1ms = 65635 - SYSCLK / 1000;

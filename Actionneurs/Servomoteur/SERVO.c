@@ -1,17 +1,25 @@
+#include "SERVO.h"
 #include "c8051F020.h"
 
 #define SYSCLK 22118400
 
-int SERVO_i = 0;
+/**
+ * Variables du Servomoteur:
+ */
 
+// Pin du Servomoteur:
 sbit SERVO_pin = P1 ^ 3;
 
+// Paramètres de la position du Servomoteur:
 unsigned int SERVO_t_pos_min = 600;   // Durée de l'impulsion pour 0°
 unsigned int SERVO_t_pos_max = 2300;  // Durée de l'impulsion pour 180°
 unsigned int SERVO_alpha;             // Durée d'impulsion par degré d'angle
 
+// Calcul de la position:
 unsigned int timer_load, timer_count, timer_pulse;
-unsigned int SERVO_angle;
+
+// Compte le nombre d'interruptions:
+int SERVO_i = 0;
 
 /**
  * Initialisation pour utiliser un servomoteur
@@ -25,27 +33,24 @@ void SERVO_init() {
   TIMER3_config();
 
   // Durée d'impulsion par degré d'angle:
-  // SERVO_alpha = (SERVO_t_pos_max - SERVO_t_pos_min) / 180;
-  SERVO_alpha = 10;
+  SERVO_alpha = (SERVO_t_pos_max - SERVO_t_pos_min) / 180;
 }
 
 /**
  * Configuration du Timer 3
- * Registres modifiés: EIP2 (PT3), EIE2 (ET3), TMR3CN (TF3, TR3)
+ * Registres modifiés: EIP2 (PT3), EIE2 (ET3), TMR3CN (TF3,T3M,TR3)
  */
 void TIMER3_config() {
   // Activation des interruptions:
   EIP2 |= 1;            // Priorité élevé: PT3 = 1
   EIE2 |= 1;            // Enable: ET3 = 1
-  TMR3CN &= ~(1 << 7);  // RAZ Flag: TR3 = 0
+  TMR3CN &= ~(1 << 7);  // RAZ Flag: TF3 = 0
+
+  // Utilise SYSCLK:
+  TMR3CN |= 1 << 1;  // T3M = 1
 
   // Activation du Timer 3:
   TMR3CN |= (1 << 2);  // TR3 = 1
-
-  // TMR3CN &=	0xFE;	// Le timer 3 ne se base pas sur une horloge externe
-
-  // Le timer 3 se base sur l'horloge externe divisée par 8
-  // (2,7648MHz)
 }
 
 /**
@@ -60,7 +65,7 @@ void SERVO_interrupt() interrupt 14 {
   // Etat haut:
   if (SERVO_i == 10) {
     SERVO_pin = 1;
-    i = 0;
+    SERVO_i = 0;
   }
 
   // Sinon, Etat bas:
@@ -82,14 +87,13 @@ void SERVO_pos(unsigned int pos) {
   // Durée de l'impulsion nécessaire pour l'angle:
   timer_pulse = SERVO_t_pos_min + (pos * SERVO_alpha);
 
-  // Conversion en nombre de coups d'horloge nécessaires (ex clk /8)
-  timer_count = temps * 0.000001 * 2764800;
-  // Coups = temps * 0.000001 * SYSCLK;
+  // Conversion en nombre de coups d'horloge:
+  timer_count = timer_pulse * 0.000001 * SYSCLK;
 
   // Valeur de reload du Timer 3:
   timer_load = 65535 - timer_count;
 
   // Chargement du Timer 3:
-  TMR3RLL = ValeurTimer & 0x00FF;
-  TMR3RLH = (ValeurTimer >> 8);
+  TMR3RLL = timer_load & 0x00FF;
+  TMR3RLH = timer_load >> 8;
 }
