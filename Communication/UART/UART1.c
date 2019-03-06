@@ -25,6 +25,9 @@ void UART1_init() {
   // Active RX et TX de UART1 dans le Crossbar:
   XBR2 |= 1 << 2;
 
+  // Sortie en Push-Pull:
+  P0MDOUT |= 1;
+
   // Configuration du Timer 1:
   TIMER1_config();
 
@@ -58,15 +61,15 @@ void TIMER4_config() {
  * Registres modifiés: TMOD (T1M1,T1M0), T4CON (TCLK1, RCLK1), CKCON (T1M), TCON (TR1), TH1
  */
 void TIMER1_config() {
-	// Timer 1 en mode 2 : auto-reload
-	TMOD &= ~(1 << 4);  // T1M0 = 0,
-	TMOD |= (1 << 5);   // T1M1 = 1;
-	
+  // Timer 1 en mode 2 : auto-reload
+  TMOD &= ~(1 << 4);  // T1M0 = 0,
+  TMOD |= (1 << 5);   // T1M1 = 1;
+
   // Choix du timer 1 pour l'UART1:
-	T4CON &= ~(1 << 4 + 1 << 5);  // TCLK1 = 0, RCLK1 = 0
+  T4CON &= ~(1 << 4 + 1 << 5);  // TCLK1 = 0, RCLK1 = 0
 
   // Configuration du baud rate (19200):
-	CKCON &= ~(1 << 4); // Timer 1 utilise SYSCLK
+  CKCON &= ~(1 << 4); // Timer 1 utilise SYSCLK
   TH1 = 253;
 
   // Activation du Timer 1:
