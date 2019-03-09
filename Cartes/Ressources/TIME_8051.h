@@ -17,7 +17,7 @@ void TIME_interrupt();
  * Délai d'attente en ms
  * @param {int} ms : durée en millisecondes
  */
-void TIME_wait(int ms);
+void TIME_wait(unsigned int ms);
 
 /**
  * Renvoie 1 si une ms vient de passer
