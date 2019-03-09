@@ -1,3 +1,10 @@
+#ifdef MASTER
+#include "../../Cartes/Master/UART0_HANDLE_MASTER.h"
+#else
+void UART0_receive_handle_message(char* buffer);
+#endif
+
+#include "../../Cartes/Ressources/TIME_8051.h"
 #include "UART0.h"
 #include "c8051F020.h"
 
@@ -6,17 +13,17 @@
  */
 
 // Transmission:
-char UART0_transmit_busy = 0;
+bit UART0_transmit_busy = 0;
 
 // Réception:
 char UART0_receive_buffer[50];
 unsigned char UART0_receive_i = 0;
-char UART0_receive_isCode = 1;
-char UART0_receive_handle = 0;
+bit UART0_receive_handle = 0;
+char UART0_receive_char = '\0';
 
 // Couleur:
-char UART0_color = 0;
-char UART0_update_color = 0;
+bit UART0_update_color = 0;
+enum color UART0_color = WHITE;
 
 /**
  * Initialisation de l'UART0
@@ -32,8 +39,8 @@ void UART0_init() {
   // Sortie en Push-Pull:
   P0MDOUT |= 1;
 
-  // Configuration du Timer 2:
-  TIMER2_config();
+  // Configuration du Timer 1:
+  TIMER1_config();
 
   // Activation des interruptions:
   PS = 1;   // Priorité élevée
@@ -43,34 +50,45 @@ void UART0_init() {
   // Activation de la réception:
   REN0 = 1;
 
-  UART0_setColor(1);
+  UART0_resetColor();
+  UART0_setColor(GREEN);
 }
 
 /**
- * Configuration du Timer 2 comme horloge de l'UART0
- * Registres modifiés: T2CON (TCLK0, RCLK0, TR2), RCAP2H, RCAP2L
+ * Configuration du Timer 1 comme horloge de l'UART0
+ * Registres modifiés: TMOD (T1M1,T1M0), T2CON (TCLK0, RCLK0),
+ *                     CKCON (T1M), TCON (TR1), TH1
  */
-void TIMER2_config() {
-  // Choix du timer 2 pour l'UART0:
-  TCLK0 = 1;
-  RCLK0 = 1;
+void TIMER1_config() {
+  // Timer 1 en mode 2 : auto-reload
+  TMOD &= ~(1 << 4);  // T1M0 = 0,
+  TMOD |= (1 << 5);   // T1M1 = 1;
+
+  // Choix du timer 1 pour l'UART0:
+  T2CON &= ~(1 << 4 + 1 << 5);  // TCLK1 = 0, RCLK1 = 0
 
   // Configuration du baud rate (19200):
-  RCAP2H = 0xFF;
-  RCAP2L = 0xDC;
+  CKCON &= ~(1 << 4);  // Timer 1 utilise SYSCLK
+  TH1 = 253;
 
-  // Activation du Timer 2:
-  TR2 = 1;
+  // Activation du Timer 1:
+  TR1 = 1;
 }
 
 /**
  * Fonction de mise à jour de l'UART0
  */
 void UART0_update() {
+  // Renvoie d'un caractère reçu:
+  if (UART0_receive_char) {
+    UART0_sendChar(UART0_receive_char);
+    UART0_receive_char = '\0';
+  }
+
   // Traitement de la ligne:
   if (UART0_receive_handle == 1) {
     UART0_receive_handle = 0;
-    UART0_receive_handle_buffer(UART0_receive_buffer);
+    UART0_receive_handle_message(UART0_receive_buffer);
   }
 
   // Modification de la couleur du texte:
@@ -107,19 +125,37 @@ void UART0_send(char* string) {
 }
 
 /**
+ * Envoie 3 chaînes de caractères à la suite par l'UART0
+ * @param {char*} string{1-3} : chaîne de caractères à envoyer
+ */
+void UART0_send3(char* string1, char* string2, char* string3) {
+  UART0_send(string1);
+  UART0_send(string2);
+  UART0_send(string3);
+}
+
+/**
  * Définit la couleur des prochains caractères envoyés par l'UART0
  * @param {char} color : indice de la couleur
  */
-void UART0_setColor(char color) {
+void UART0_setColor(enum color c) {
   UART0_sendChar(0x1b);
-  if (color == 0)
-    UART0_send("[0m");
-  else if (color == 1)
-    UART0_send("[32m");
-  else if (color == 2)
-    UART0_send("[31m");
-  else if (color == 3)
-    UART0_send("[33m");
+  if (c == WHITE)       UART0_send("[0m");
+  else if (c == RED)    UART0_send("[31m");
+  else if (c == GREEN)  UART0_send("[32m");
+  else if (c == YELLOW) UART0_send("[33m");
+  else if (c == BLUE)   UART0_send("[34m");
+  else if (c == PINK)   UART0_send("[35m");
+  else if (c == CYAN)   UART0_send("[36m");
+  else if (c == GREY)   UART0_send("[37m");
+}
+
+/**
+ * Initialise la couleur des caractères de l'UART0
+ * Correspond à la couleur du code de la commande
+ */
+void UART0_resetColor() {
+  UART0_setColor(WHITE);  // Code
 }
 
 /**
@@ -147,23 +183,21 @@ void UART0_interrupt() interrupt 4 {
 
       // Gestion de la couleur:
       if (c == ' ') {
-        if (UART0_receive_isCode == 1) {
-          UART0_receive_isCode = 0;
-          UART0_color = 1;
-        } else
-          UART0_color = 2;
-
+        UART0_color = CYAN;  // Param
         UART0_update_color = 1;
-      } else if (c == ':') {
-        UART0_color = 3;
+      }
+      // Valeur de paramètre:
+      else if (c == ':') {
+        UART0_color = YELLOW;  // Valeur
         UART0_update_color = 1;
       }
 
-      UART0_sendChar(c);
+      // UART0_sendChar(c);
+      UART0_receive_char = c;
     }
 
-    // Si fin de la ligne:
-    else if (c == '\r') {
+    // Si fin de la ligne ou trop de caractères:
+    if (c == '\r' || UART0_receive_i > 30) {
       // Ajoute le caractère de fin:
       UART0_receive_buffer[UART0_receive_i] = '\0';
       UART0_receive_i = 0;
@@ -177,18 +211,39 @@ void UART0_interrupt() interrupt 4 {
   }
 }
 
+#ifndef MASTER
 /**
- * Fonction déclenchée lorsqu'une ligne est reçu sur l'UART0
+ * Fonction déclenchée par défaut lorsqu'une ligne est reçu sur l'UART0
  * @param {char*} buffer : ligne reçu par l'UART0
  */
-void UART0_receive_handle_buffer(char* buffer) {
+void UART0_receive_handle_message(char* buffer) {
   UART0_send("\r\n");
 
   // Renvoie la ligne reçue:
   UART0_send(buffer);
-
   UART0_send("\r\n");
 
-  UART0_setColor(1);
-  UART0_receive_isCode = 1;
+  UART0_resetColor();
 }
+#endif
+
+/**
+ * ARCHIVES
+ */
+
+/**
+ * Configuration du Timer 2 comme horloge de l'UART0
+ * Registres modifiés: T2CON (TCLK0, RCLK0, TR2), RCAP2H, RCAP2L
+ */
+/*void TIMER2_config() {
+  // Choix du timer 2 pour l'UART0:
+  TCLK0 = 1;
+  RCLK0 = 1;
+
+  // Configuration du baud rate (19200):
+  RCAP2H = 0xFF;
+  RCAP2L = 0xDC;
+
+  // Activation du Timer 2:
+  TR2 = 1;
+}*/

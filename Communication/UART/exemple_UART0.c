@@ -1,22 +1,12 @@
-#include "CONFIG_8051.h"
+#include "../../Cartes/Ressources/CONFIG_8051.h"
 #include "UART0.h"
-#include "c8051F020.h"
 
 void main(void) {
-  // Dévalidation du watchdog:
-  CONFIG_watchdog();
-
-  // Utilisation de l'horloge externe:
-  CONFIG_externClock();
-
+	// Initialisation du microcontrôleur:
+	CONFIG_init();
+	
   // Initialisation et activation de l'UART0:
   UART0_init();
-
-  // Activation des interrutions:
-  CONFIG_activeInterrupts();
-
-  // Activation du crossbar:
-  CONFIG_activeCrossbar();
 
   // Message de démarrage:
   UART0_send("DEMARRAGE\n\r");
