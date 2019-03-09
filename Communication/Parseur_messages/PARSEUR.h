@@ -3,8 +3,8 @@
 
 // Structure d'un message interprété:
 typedef struct {
-  char code[4];
-  int nbParams;
+  char cmd[4];
+  char nbParams;
   char params[4];
   char valeurs[4][5];
 } Commande;
@@ -13,7 +13,6 @@ typedef struct {
  * Sépare les éléments d'un message
  * @param {char*} message : message à interpréter
  */
-Commande PARSE_message(char* message);
-
+Commande PARSEUR_message(char* message);
 
 #endif  // PARSEUR_H

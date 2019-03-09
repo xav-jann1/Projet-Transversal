@@ -14,36 +14,33 @@
  * @param {char*} message : message à décortiquer
  * @return {Commande} : contient le code et les paramètres (avec valeurs)
  */
-Commande PARSE_message(char* message) {
-  // Copie du message (car strtok() modifie ses paramètres):
-  char str[strlen(message)];
-  strcpy(str, message);
-
-  // Liste de mots:
+Commande PARSEUR_message(char* message) {
+  // Variables de la fonction:
+  char counter = 0, i;
   char mots[5][7];
-  int counter = 0;
-
-  // Récupère chaque mot séparé par un espace:
-  char* delim = " ";
-  char* ptr = strtok(str, delim);  // Prend le premier mot
-  while (ptr != NULL) {            // Tant qu'il y a un mot
-    strcpy(mots[counter++], ptr);  //   Enregistre le mot
-    ptr = strtok(NULL, delim);     //   Cherche le mot suivant
-  }
-
-  // Création de la commande:
+  char* ptr;
   Commande commande;
 
+  // Copie du message (car strtok() modifie ses paramètres):
+  char str[50];
+  strcpy(str, message);
+
+  // Récupère chaque mot séparé par un espace:
+  ptr = strtok(str, " ");          // Prend le premier mot
+  while (ptr != NULL) {            // Tant qu'il y a un mot
+    strcpy(mots[counter++], ptr);  //   Enregistre le mot
+    ptr = strtok(NULL, " ");       //   Cherche le mot suivant
+  }
+
   // Ajout du code de la commande et du nombre de paramètres:
-  strcpy(commande.code, mots[0]);
+  strcpy(commande.cmd, mots[0]);
   commande.nbParams = counter - 1;
 
   // Sépare et enregistre chaque mot à la commande (mot = param[:valeur]):
-  for (int i = 0; i < commande.nbParams; i++) {
+  for (i = 0; i < commande.nbParams; i++) {
     // Récupère le paramètre et la valeur:
-    char* delim = ":";
-    char* params = strtok(mots[i + 1], delim);
-    char* valeur = strtok(NULL, delim);
+    char* params = strtok(mots[i + 1], ":");
+    char* valeur = strtok(NULL, ":");
 
     // Ajoute le paramètre et sa valeur (s'il en possède une) à la commande:
     commande.params[i] = params[0];  // $*
