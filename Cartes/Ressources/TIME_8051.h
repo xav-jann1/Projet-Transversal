@@ -23,7 +23,7 @@ void TIME_wait(unsigned int ms);
  * Renvoie 1 si une ms vient de passer
  * @return {char} bool : 0 ou 1
  */
-char TIME_flag_ms();
+bit TIME_flag_ms();
 
 /**
  * Initialise le flag indiquant les ms

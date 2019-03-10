@@ -176,7 +176,7 @@ void UART0_interrupt() interrupt 4 {
 
     // Vérification du caractère:
     if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
-        (c >= '0' && c <= '9') || c == ' ' || c == ':') {
+        (c >= '0' && c <= '9') || c == ' ' || c == ':' || c == '-') {
       // Ajoute le caractère au buffer:
       UART0_receive_buffer[UART0_receive_i] = c;
       UART0_receive_i++;
