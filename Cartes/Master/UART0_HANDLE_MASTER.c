@@ -9,12 +9,15 @@
 
 extern char* (*HANDLES[8])(Commande*);
 
+// Epreuve en cours:
+#include "./MASTER.h"
+
 /**
  * Fonction déclenchée lorsqu'une ligne est reçue sur l'UART0
  * @param {char*} message : message reçu
  */
 void UART0_receive_handle_message(char* message) {
-  int data i = 0;
+  char data i = 0, n = 1;
 
   // Réponse:
   char data response[8] = "rien";
@@ -23,8 +26,11 @@ void UART0_receive_handle_message(char* message) {
   Commande data commande;
   commande = PARSEUR_message(message);
 
+  // Si épreuve en cours:
+  if (MASTER_isEpreuveInProgress()) n = 8;
+
   // Cherche et exécute la commande:
-  for (i = 0; i < 8; i++) {
+  for (i = 0; i < n; i++) {
     // Exécute la commande, si elle est reconnue dans l'ensemble des fonctions:
     strcpy(response, (*HANDLES[i])(&commande));
 
@@ -32,7 +38,7 @@ void UART0_receive_handle_message(char* message) {
     if (strcmp(response, "rien") != 0) break;
   }
 
-  // S'il y a une réponse d'erreur:
+  // S'il y a une erreur:
   if (strcmp(response, "error") == 0) {
     // Message d'erreur:
     UART0_setColor(RED);

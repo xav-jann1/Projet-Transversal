@@ -23,4 +23,30 @@ void RTOS();
  */
 void MASTER_init();
 
+/**
+ * Démarrer une épreuve
+ * @param {unsigned char} e : numéro de l'épreuve
+ * @return {bit} 0: ok, 1: erreur -> une épreuve a déjà commencée
+ */
+bit MASTER_startEpreuve(unsigned char e);
+
+/**
+ * Indiquer si une épreuve est en cours
+ * @return {bit} 0: non, 1: épreuve en cours
+ */
+bit MASTER_isEpreuveInProgress();
+
+/**
+ * Termine une épreuve
+ * @return {bit} 0: ok, 1: erreur -> aucune épreuve en cours
+ */
+bit MASTER_endEpreuve();
+
+/**
+ * Arrêt d'urgence:
+ *  Arrêt complet de la base roulante, les opérations en cours sont
+ *  interrompues, les données en cours d’acquisition sont perdues
+ */
+void MASTER_exit();
+
 #endif

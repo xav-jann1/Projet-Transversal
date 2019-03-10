@@ -44,7 +44,7 @@ Commande PARSEUR_message(char* message) {
     // Ajoute le paramètre et sa valeur (s'il en possède une) à la commande:
 
     // Si le paramètre est une valeur:
-    if (strlen(param) > 1) {
+    if (param[0] >= '0' && param[0] <= '9' || strlen(param) > 1) {
       int n;
       commande.params[i] = '#';
 
