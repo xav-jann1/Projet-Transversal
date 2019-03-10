@@ -8,10 +8,10 @@
 
 void test() {
   int i, nbParams;
-  char c, buff[5];
+  char buff[8];
 
   // Message à interpréter:
-  char* message = "A B DE:45 D";
+  char* message = "C 128 B D:145 A:255";
 
   // Interprétation du texte:
   Commande commande;
@@ -31,13 +31,15 @@ void test() {
 
   // Pour chaque paramètre de la commande:
   for (i = 0; i < commande.nbParams; i++) {
-    // printf("param: '%c', valeur: '%s'", commande.params[i], commande.valeurs[i]);
-    c = commande.params[i];
-    sprintf(buff, "%c", c);
-    UART0_send3("params: '", buff, "', ");
-    UART0_send3("valeurs: '", commande.valeurs[i], "'");
+    // printf("param: '%c', valeur: '%s'", commande.params[i],
+    // commande.valeurs[i]);
+    sprintf(buff, "%c", commande.params[i]);
+    UART0_send3("param: '", buff, "', ");
 
-    if (commande.valeurs[i][0] == '\0') UART0_send("NULL");  // printf("NULL");
+    sprintf(buff, "%d", commande.valeurs[i]);
+    UART0_send3("valeur: '", buff, "'");
+
+    if (commande.valeurs[i] == 0xFF) UART0_send("NULL");  // printf("NULL");
 
     UART0_send("\n\r");
   }

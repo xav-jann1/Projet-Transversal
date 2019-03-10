@@ -6,7 +6,7 @@ typedef struct {
   char cmd[4];
   char nbParams;
   char params[4];
-  char valeurs[4][5];
+  int valeurs[4];
 } Commande;
 
 /**

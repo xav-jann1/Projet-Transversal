@@ -4,6 +4,7 @@ Extrait la **commande** et les **paramètres** d'un [message]() reçu par la **C
 
 **Exemples de message :**
 - `RG`
+- `TV 50`
 - `RA D:160`
 - `G X:-50 Y:60 A:90`
 - `MOB D A:20`
@@ -25,7 +26,7 @@ struct Commande {
   char code[4];
   int nbParams,
   char params[4],
-  char valeurs[4][5],
+  int valeurs[4],
 }
 ```
 - `code` : code de la commande
@@ -35,7 +36,9 @@ struct Commande {
 
 *(Un même indice entre `params` et `valeurs` correspond au même mot)*
 
-Si le **paramètre** ne possède pas de **valeur**, sa valeur dans la liste `valeurs` est le *caractère de fin* (`"\0"`).
+Si le **paramètre** ne possède pas de **valeur**, sa valeur dans la liste `valeurs` est `0xFF`.
+Si le **paramètre** est un nombre, sa valeur est enregistrée dans la liste `valeurs`, et `#` dans la liste `params`.
+
 
 ## Fonctionnement
 
@@ -45,7 +48,8 @@ Le premier mot correspond alors au **code** de la commande, et les autres aux **
 
 Le **code** et le **nombre de paramètres** sont ainsi ajoutés à la `commande`, puis les listes `params` et `valeurs` se remplissent des **paramètres** et des **valeurs** de chaque mot (en les séparant par le caractère `':'`).
 
-Si le **paramètre** ne possède pas de **valeur**, sa valeur dans la liste `valeurs` est le *caractère de fin* (`"\0"`).
+Si le **paramètre** ne possède pas de **valeur**, sa valeur dans la liste `valeurs` est `0xFF`.
+Si le **paramètre** est un nombre, sa valeur est enregistrée dans la liste `valeurs`, et `#` dans la liste `params`.
 
 
 ## Limites
@@ -54,22 +58,24 @@ L'utilisation de la fonction `PARSEUR_message()` possède plusieurs limites sur 
 
 Cependant, ces limites existent pour avoir une structure universelle afin de traiter efficacement toutes les commandes du cahier des charges.
 
-Nombre **maximum** de caractères pour chaque élément du message : `code param1:val1 param2:val2`
+Nombre **maximum** de caractères pour chaque élément du message : `code param1:val1 param2:val2 param3`
 
 Elément | Maximum | Exemple
 -|-|-
 code      |  3  |  `MOS`
 paramètre |  1  |  `P`
-valeur    |  4  | `-100`
+valeur    |  4  |  `-100`
 
-Ainsi, pour que le **code** et la **valeur** soit enregistrés dans une variable, il faut aussi ajouter le caractère de fin `\0`.
+Si le paramètre est seul et est un nommbre, sa valeur est enregistré dans la liste valeur.
+
+Ainsi, pour que le **code** soit enregistré dans une variable, il faut aussi ajouter le caractère de fin `\0`.
 
 Par conséquent, un **mot** du **message** est composé au maximum de **6** caractères (c'est-à-dire **7** lorsqu'il est stocké dans la liste de `mots` : `P:VALE` + `\0`)
 
 Aussi, une **commande** possède, selon le cahier des charges, au maximum **4** **paramètres**.
 
 Finalement, un **message** doit se limiter à **5** mots de **6** caractères chacun,
-sachant que seulement **3** seront utilisés pour le **code**, **1** pour le **paramètre** et **4** pour la **valeur**.
+sachant que seulement **3** seront utilisés pour le **code**, **1-3** pour le **paramètre** et **4** pour la **valeur**.
 
 Autrement dit, la fonction `PARSEUR_message()` est étudiée pour respecter le cahier des charges,
 et n'est donc pas adaptée à toutes formes de commandes.
