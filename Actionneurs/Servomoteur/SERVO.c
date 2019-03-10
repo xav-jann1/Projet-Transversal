@@ -18,8 +18,14 @@ unsigned int SERVO_alpha;             // Durée d'impulsion par degré d'angle
 // Calcul de la position:
 unsigned int timer_load, timer_count, timer_pulse;
 
+// Enregistrement de la position:
+char SERVO_position = 0;
+
 // Compte le nombre d'interruptions:
 int SERVO_i = 0;
+
+// Temps en ms, avant que le servo soit correctement positionné:
+unsigned int SERVO_wait_pos = 0;
 
 /**
  * Initialisation pour utiliser un servomoteur
@@ -34,6 +40,12 @@ void SERVO_init() {
 
   // Durée d'impulsion par degré d'angle:
   SERVO_alpha = (SERVO_t_pos_max - SERVO_t_pos_min) / 180;
+
+  // Position d'origine:
+  SERVO_pos(0);
+
+  // Pour ne pas envoyer de message:
+  SERVO_wait_pos = 0;
 }
 
 /**
@@ -51,6 +63,19 @@ void TIMER3_config() {
 
   // Activation du Timer 3:
   TMR3CN |= (1 << 2);  // TR3 = 1
+}
+
+/**
+ * Fonction qui doit s'exécuter toutes les ms,
+ * pour prévenir lorsque le servo s'est bien positionné
+ * @return {bit} 0: rien, 1: servo positionné
+ */
+bit SERVO_update() {
+  if (SERVO_wait_pos > 0) {
+    SERVO_wait_pos--;
+    if (SERVO_wait_pos == 0) return 1;
+  }
+  return 0;
 }
 
 /**
@@ -77,12 +102,16 @@ void SERVO_interrupt() interrupt 14 {
 
 /**
  * Modifie la position du servomoteur
- * @param {unsigned int} pos : position du servomoteur (entre 0° et 180°)
+ * @param {unsigned int} pos : position du servomoteur (entre -90° et 90°)
  * Registres modifiés: TMR3RLL, TMR3RLH
  */
-void SERVO_pos(unsigned int pos) {
+void SERVO_pos(char p) {
+  // Adaptation de l'angle:
+  unsigned char pos = p + 90;  // [0°,180°]
+
   // Vérification de l'angle:
   if (pos > 180) pos = 180;
+  if (pos < 0) pos = 0;
 
   // Durée de l'impulsion nécessaire pour l'angle:
   timer_pulse = SERVO_t_pos_min + (pos * SERVO_alpha);
@@ -96,4 +125,10 @@ void SERVO_pos(unsigned int pos) {
   // Chargement du Timer 3:
   TMR3RLL = timer_load & 0x00FF;
   TMR3RLH = timer_load >> 8;
+
+  // Envoie un message dans $n ms, indiquant que le servo s'est bien positionné:
+  SERVO_wait_pos = 500;  // $n ms
+
+  // Enregistre la nouvelle position du servo:
+  SERVO_position = pos;
 }
