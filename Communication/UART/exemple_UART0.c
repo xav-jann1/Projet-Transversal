@@ -2,9 +2,9 @@
 #include "UART0.h"
 
 void main(void) {
-	// Initialisation du microcontrôleur:
-	CONFIG_init();
-	
+  // Initialisation du microcontrôleur:
+  CONFIG_init();
+
   // Initialisation et activation de l'UART0:
   UART0_init();
 

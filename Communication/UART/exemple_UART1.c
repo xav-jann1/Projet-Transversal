@@ -3,20 +3,11 @@
 #include "c8051F020.h"
 
 void main(void) {
-  // Dévalidation du watchdog:
-  CONFIG_watchdog();
-
-  // Utilisation de l'horloge externe:
-  CONFIG_externClock();
+  // Initialisation du microcontrôleur:
+  CONFIG_init();
 
   // Initialisation et activation de l'UART0:
-  UART0_init();
-
-  // Activation des interrutions:
-  CONFIG_activeInterrupts();
-
-  // Activation du crossbar:
-  CONFIG_activeCrossbar();
+  UART1_init();
 
   UART1_send("DEMARRAGE\n\r");
 
