@@ -2,29 +2,23 @@
 #define BASE_H
 
 /**
- * Communication avec le Serializer 
+ * Déplacement 
  */
 
-/**
- * Envoie une commande et attend une réponse du Serializer:
- * @return {char*} : réponse de la commande
+/**  "IPO X:valeur_x Y:valeur_y A:angle"
+ * Initialisation de la position enregistrée sur la base
+ * @param {int} x : -99 - 99 dm, position selon l'axe x
+ * @param {int} y : -99 - 99 dm, position selon l'axe y
+ * @param {int}  a : -180 - 180°, rotation selon l'axe x
+ * @return {bit} 0: ok, 1: error, pour savoir si la fonction s'est bien exécutée
  */
-char* SRLZR_sendCommandAndWait(char*);
+bit BASE_setPosition(int x, int y, int a);
 
-/**
- * Envoie une commande au Serializer:
- * @param  {char*} command : commande à envoyer au Serializer
- * @return {char} : 'y' ou 'n', pour savoir si la fonction s'est bien exécutée
+/**  "POS"
+ * Retourne la position de la base relative dans la zone d'évolution
+ * @return {char*} : "VPO X:valeur_x Y:valeur_y A:angle"
  */
-char SRLZR_sendCommand(char* command);
-
-/**
- * Attend une réponse du Serializer
- * Utilise un TimeOut pour ne pas attendre inutilement indéfiniment
- * @return {char*} : réponse de la commande
- */
-char* SRLZR_waitResponse();
-
+char* BASE_getPosition();
 
 /**  "TV vitesse"
  * Définit la vitesse de déplacement de la base
@@ -39,7 +33,7 @@ bit BASE_setSpeed(char v);
  * @param  {char} v : 5-100 %, vitesse désirée ; 0 = vitesse de BASE_setSpeed()
  * @return {bit} : 0 (ok) ou 1 (erreur), pour savoir si la fonction s'est bien exécutée
  */
-bit BASE_forward(char v);
+bit BASE_forward_v(char v);
 
 /**  "B [vitesse]"
  * Fait reculer la base avec la vitesse définit en paramètre ou par
@@ -47,7 +41,7 @@ bit BASE_forward(char v);
  * @param  {char} v : 5-100 % = vitesse désirée ; 0 = vitesse de BASE_setSpeed()
  * @return {bit} : 0 (ok) ou 1 (erreur), pour savoir si la fonction s'est bien exécutée
  */
-bit BASE_backard(char v);
+bit BASE_backward_v(char v);
 
 /**  "S"
  * Arrête les moteurs, pour les commandes BASE_forward() et BASE_backward()
@@ -77,10 +71,10 @@ bit BASE_fullRotation(char sens);
 /**  "RA sens:valeur"
  * Effectue une rotation 'optimisée' dans un sens et un angle précisés
  * @param {char} sens : 'G' ou 'D', sens de la rotation
- * @param {int} valeur : 0-180, angle de rotation à réaliser
+ * @param {unsigned int} valeur : 0-180 ou 360, angle de rotation à réaliser
  * @return {bit} : 0 (ok) ou 1 (erreur), pour savoir si la fonction s'est bien exécutée
  */
-bit BASE_rotate(char sens, int valeur);
+bit BASE_rotate(char sens, unsigned int valeur);
 
 /**  "G X:valeur_x Y :valeur_y A:angle"
  * Déplace la base à des coordonnées relatives
@@ -91,20 +85,5 @@ bit BASE_rotate(char sens, int valeur);
  * @return {bit} : 0 (ok) ou 1 (erreur), pour savoir si la fonction s'est bien exécutée
  */
 bit BASE_moveTo(char x, char y, int a);
-
-/**  "IPO X:valeur_x Y:valeur_y A:angle"
- * Initialise la position de la base dans la zone d'exploration
- * @param {char} x : -99 - 99 dm, position selon l'axe x
- * @param {char} y : -99 - 99 dm, position selon l'axe y
- * @param {int}  a : -180 - 180°, rotation selon l'axe x
- * @return {bit} : 0 (ok) ou 1 (erreur), pour savoir si la fonction s'est bien exécutée
- */
-bit BASE_initPos(int x, int y, int a);
-
-/**  "POS"
- * Retourne la position de la base relative dans la zone d'évolution
- * @return {char*} : "VPO X:valeur_x Y:valeur_y A:angle"
- */
-char* BASE_getPos();
 
 #endif  // BASE_H

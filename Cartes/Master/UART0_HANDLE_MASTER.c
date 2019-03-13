@@ -20,7 +20,7 @@ void UART0_receive_handle_message(char* message) {
   char data i = 0, n = 1;
 
   // Réponse:
-  char data response[8] = "rien";
+  char data response[30] = "rien";
 
   // Extrait la commande du message:
   Commande data commande;

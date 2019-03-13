@@ -17,7 +17,7 @@ void TIMER4_config();
  * Configuration du Timer 1 comme horloge de l'UART1
  * Registres modifiés: TMOD (T1M1,T1M0), T4CON (TCLK1, RCLK1), CKCON (T1M), TCON (TR1), TH1
  */
-void TIMER1_config();
+void UART1_TIMER1_config();
 
 /**
  * Fonction de mise à jour de l'UART1 

@@ -11,6 +11,7 @@
 #include "../../Communication/UART/UART1.h"
 
 // Actionneurs:
+#include "../../Actionneurs/Serializer/SRLZR.h"
 #include "../../Actionneurs/Servomoteur/SERVO.h"
 
 // Capteurs:
@@ -38,7 +39,11 @@ void main(void) {
   TIME_wait(1000);
   print_PC(">");
   UART0_resetColor();
-
+	
+	// Test UART1:
+	UART1_send("TEST\r\n");
+	
+	
   // Boucle principale:
   while (1) {
     UART0_update();
@@ -88,7 +93,7 @@ void MASTER_init() {
   UART0_init();
 
   // UART1 pour Serializer:
-  // UART1_init();
+  UART1_init();
 
   // SPI pour Slave:
   // SPI_init();
@@ -99,6 +104,9 @@ void MASTER_init() {
 
   // Servomoteur:
   SERVO_init();
+	
+	// Serializer:
+	SRLZR_init();
 
   /**
    * Capteurs:
@@ -157,5 +165,5 @@ bit MASTER_endEpreuve() {
  */
 void MASTER_exit() {
   MASTER_isEpreuveInProgress_flag = 0;
-  // BASE_stop();
+  SRLZR_stop();
 }

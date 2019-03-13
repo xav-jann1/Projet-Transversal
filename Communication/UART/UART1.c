@@ -29,7 +29,7 @@ void UART1_init() {
   P0MDOUT |= 1;
 
   // Configuration du Timer 1:
-  TIMER1_config();
+  UART1_TIMER1_config();
 
   // Activation des interruptions:
   EIP2 |= 1 << 6;      // Priorité élevée : EP1/PS1 = 1
@@ -60,7 +60,7 @@ void TIMER4_config() {
  * Configuration du Timer 1 comme horloge de l'UART1
  * Registres modifiés: TMOD (T1M1,T1M0), T4CON (TCLK1, RCLK1), CKCON (T1M), TCON (TR1), TH1
  */
-void TIMER1_config() {
+void UART1_TIMER1_config() {
   // Timer 1 en mode 2 : auto-reload
   TMOD &= ~(1 << 4);  // T1M0 = 0,
   TMOD |= (1 << 5);   // T1M1 = 1;
@@ -117,7 +117,7 @@ void UART1_send(char* string) {
  * Fonction d'interruption de l'UART1
  * Registres modifiés: SCON01.0:RI1, SCON01.1:TI1, SBUF0
  */
-void UART1_interrupt() /*interrupt 20*/ {
+void UART1_interrupt() interrupt 20 {
   // Transmission:
   if ((SCON1 >> 1) & 1 == 1) {
     UART1_transmit_busy = 0;
