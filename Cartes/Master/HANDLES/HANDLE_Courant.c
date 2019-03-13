@@ -13,7 +13,7 @@ char* HANDLE_Courant(Commande* commande) {
   char* params = (*commande).params;
   int* valeurs = (*commande).valeurs;
 
-  bit isCommand = 0;
+  bit isCommand = 1;
   bit hasError = 0;
   char response[32] = "rien";
 
@@ -24,6 +24,10 @@ char* HANDLE_Courant(Commande* commande) {
   // ME : Mesure énergie
   else if (strcmp("ME", cmd) == 0) {
   }
+
+  // Si aucune commande reconnue:
+  else
+    isCommand = 0;
 
   return response;
 }

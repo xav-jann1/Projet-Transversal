@@ -16,7 +16,7 @@ char* HANDLE_Pointeur_lumineux(Commande* commande) {
   char* params = (*commande).params;
   int* valeurs = (*commande).valeurs;
 
-  bit isCommand = 0;
+  bit isCommand = 1;
   bit hasError = 0;
   char response[32] = "rien";
 
@@ -32,8 +32,6 @@ char* HANDLE_Pointeur_lumineux(Commande* commande) {
   else if (strcmp("CS", cmd) == 0) {
     char O = 'H', angle = 0;
     int i;
-
-    isCommand = 1;
 
     for (i = 0; i < nbParams; i++) {
       char param = params[i];
@@ -65,6 +63,10 @@ char* HANDLE_Pointeur_lumineux(Commande* commande) {
         SERVO_pos(-90);
     }
   }
+
+  // Si aucune commande reconnue:
+  else
+    isCommand = 0;
 
   // Réponse :
   if (hasError)

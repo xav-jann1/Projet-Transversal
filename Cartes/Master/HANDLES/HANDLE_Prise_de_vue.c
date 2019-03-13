@@ -13,7 +13,7 @@ char* HANDLE_Prise_de_vue(Commande* commande) {
   char* params = (*commande).params;
   int* valeurs = (*commande).valeurs;
 
-  bit isCommand = 0;
+  bit isCommand = 1;
   bit hasError = 0;
   char response[32] = "rien";
 
@@ -24,6 +24,10 @@ char* HANDLE_Prise_de_vue(Commande* commande) {
   // SPHH : Arrêt de la prise de photographies en continu
   else if (strcmp("SPH", cmd) == 0) {
   }
+
+  // Si aucune commande reconnue:
+  else
+    isCommand = 0;
 
   return response;
 }

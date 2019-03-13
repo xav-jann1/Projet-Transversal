@@ -17,14 +17,13 @@ char* HANDLE_Fonctionnement(Commande* commande) {
   char* params = (*commande).params;
   int* valeurs = (*commande).valeurs;
 
-  bit isCommand = 0;
+  bit isCommand = 1;
   bit hasError = 0;
   char response[32] = "rien";
 
   // D : Début de l'épreuve
   if (strcmp("D", cmd) == 0) {
     int epreuve = 1;
-    isCommand = 1;
 
     if (nbParams >= 1) epreuve = valeurs[0];
     hasError = MASTER_startEpreuve(epreuve);
@@ -34,8 +33,6 @@ char* HANDLE_Fonctionnement(Commande* commande) {
 
   // E : Fin de l'épreuve
   else if (strcmp("E", cmd) == 0) {
-    isCommand = 1;
-
     if (nbParams == 0)
       hasError = MASTER_endEpreuve();
     else
@@ -46,8 +43,6 @@ char* HANDLE_Fonctionnement(Commande* commande) {
 
   // Q : Arrêt "Urgence"
   else if (strcmp("Q", cmd) == 0) {
-    isCommand = 1;
-
     if (nbParams == 0)
       MASTER_exit();
     else
@@ -55,6 +50,10 @@ char* HANDLE_Fonctionnement(Commande* commande) {
 
     if (!hasError) strcpy(response, "Arrêt d'urgence");
   }
+
+  // Si aucune commande reconnue:
+  else
+    isCommand = 0;
 
   return response;
 }
