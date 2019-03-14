@@ -1,10 +1,13 @@
-#include "CONFIG_8051.h"
 #include "POINTEUR.h"
-#include "TIME_8051.h"
+#include "../../Cartes/Ressources/CONFIG_8051.h"
+#include "../../Cartes/Ressources/TIME_8051.h"
 
 void main() {
+	int i;
+	
   // Initialisation du 8051:
   CONFIG_init();
+	TIME_init();
 
   // Initialisation du pointeur lumineux:
   POINTEUR_init();
@@ -29,13 +32,13 @@ void main() {
   POINTEUR_on();
 
   // Augmente progressivement l'intensité du pointeur:
-  for (int i = 1; i < 10; i++) {
+  for (i = 1; i < 10; i++) {
     POINTEUR_pwm(0.1 * i);
     TIME_wait(1000);
   }
 
   // Diminue progressivement l'intensité du pointeur:
-  for (int i = 1; i < 10; i++) {
+  for (i = 1; i < 10; i++) {
     POINTEUR_pwm(1 - 0.1 * i);
     TIME_wait(1000);
   }
@@ -47,7 +50,7 @@ void main() {
   POINTEUR_pwm(1);
 
   // Fait clignoter le pointeur:
-  for (int i = 0; i < 10; i++) {
+  for (i = 0; i < 10; i++) {
     POINTEUR_on();
     TIME_wait(500);
     POINTEUR_off();
