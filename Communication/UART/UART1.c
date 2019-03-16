@@ -26,7 +26,7 @@ void UART1_init() {
   XBR2 |= 1 << 2;
 
   // Sortie en Push-Pull:
-  P0MDOUT |= 1;
+  P0MDOUT |= 1 << 2;
 
   // Configuration du Timer 1:
   UART1_TIMER1_config();

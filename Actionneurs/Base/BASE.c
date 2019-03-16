@@ -117,14 +117,14 @@ bit BASE_rotate(char sens, unsigned int valeur) {
   d = theta * BASE_rayon_entre_roues;
 
   // Vitesse de rotation:
-  v = 10;  // TODO: définir une vitesse optimale
+  v = 30;  // TODO: définir une vitesse optimale
 
   if (sens == 'G')
     // Tourne à gauche:
-    return SRLZR_digo(d, v, d, -v);
+    return SRLZR_digo(d, v, -d, v);
   else
     // Tourne à droite:
-    return SRLZR_digo(d, -v, d, v);
+    return SRLZR_digo(-d, v, d, v);
 }
 
 /**  "RG"

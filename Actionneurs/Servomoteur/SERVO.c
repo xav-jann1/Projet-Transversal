@@ -11,8 +11,8 @@
 sbit SERVO_pin = P1 ^ 3;
 
 // Paramètres de la position du Servomoteur:
-unsigned int SERVO_t_pos_min = 600;   // Durée de l'impulsion pour 0°
-unsigned int SERVO_t_pos_max = 2300;  // Durée de l'impulsion pour 180°
+unsigned int SERVO_t_pos_min = 700;   // Durée de l'impulsion pour 0°
+unsigned int SERVO_t_pos_max = 2400;  // Durée de l'impulsion pour 180°
 unsigned int SERVO_alpha;             // Durée d'impulsion par degré d'angle
 
 // Calcul de la position:
@@ -54,7 +54,7 @@ void SERVO_init() {
  */
 void TIMER3_config() {
   // Activation des interruptions:
-  EIP2 |= 1;            // Priorité élevé: PT3 = 1
+  EIP2 |= 1;            // Priorité élevée: PT3 = 1
   EIE2 |= 1;            // Enable: ET3 = 1
   TMR3CN &= ~(1 << 7);  // RAZ Flag: TF3 = 0
 
