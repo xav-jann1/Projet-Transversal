@@ -26,7 +26,7 @@ void UART1_init() {
   XBR2 |= 1 << 2;
 
   // Sortie en Push-Pull:
-  P0MDOUT |= 1 << 2;
+  P0MDOUT |= 1 << 2;  // crossbar-pin
 
   // Configuration du Timer 1:
   UART1_TIMER1_config();
@@ -41,24 +41,9 @@ void UART1_init() {
 }
 
 /**
- * Configuration du Timer 4 comme horloge de l'UART1
- * Registres modifiés: T4CON (TCLK1, RCLK1, TR4), RCAP4H, RCAP4L
- */
-void TIMER4_config() {
-  // Choix du timer 4 pour l'UART1:
-  T4CON = 3 << 4;  // TCLK1 = 1, RCLK1 = 1
-
-  // Configuration du baud rate (19200):
-  RCAP4H = 0xFF;
-  RCAP4L = 0xDC;
-
-  // Activation du Timer 4:
-  T4CON |= 1 << 2;  // TR4 = 1
-}
-
-/**
  * Configuration du Timer 1 comme horloge de l'UART1
- * Registres modifiés: TMOD (T1M1,T1M0), T4CON (TCLK1, RCLK1), CKCON (T1M), TCON (TR1), TH1
+ * Registres modifiés: TMOD (T1M1,T1M0), T4CON (TCLK1, RCLK1), 
+ *                     CKCON (T1M), TCON(TR1), TH1
  */
 void UART1_TIMER1_config() {
   // Timer 1 en mode 2 : auto-reload
@@ -69,7 +54,7 @@ void UART1_TIMER1_config() {
   T4CON &= ~(1 << 4 + 1 << 5);  // TCLK1 = 0, RCLK1 = 0
 
   // Configuration du baud rate (19200):
-  CKCON &= ~(1 << 4); // Timer 1 utilise SYSCLK
+  CKCON &= ~(1 << 4);  // Timer 1 utilise SYSCLK
   TH1 = 253;
 
   // Activation du Timer 1:
@@ -167,3 +152,23 @@ void UART1_receive_handle_buffer(char* buffer) {
 
   UART1_receive_isCode = 1;
 }
+
+/**
+ * Archives:
+ */
+
+/**
+ * Configuration du Timer 4 comme horloge de l'UART1
+ * Registres modifiés: T4CON (TCLK1, RCLK1, TR4), RCAP4H, RCAP4L
+ */
+/*void UART1_TIMER4_config() {
+  // Choix du timer 4 pour l'UART1:
+  T4CON = 3 << 4;  // TCLK1 = 1, RCLK1 = 1
+
+  // Configuration du baud rate (19200):
+  RCAP4H = 0xFF;
+  RCAP4L = 0xDC;
+
+  // Activation du Timer 4:
+  T4CON |= 1 << 2;  // TR4 = 1
+}*/

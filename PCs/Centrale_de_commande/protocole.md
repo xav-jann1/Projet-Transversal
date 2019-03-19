@@ -50,7 +50,7 @@ Commande | Détail
 `RA [sens:valeur]` | Rotation de la base roulante d’un angle donné (par défaut, droite - 90°)
 `G X:valeur_x Y:valeur_y A:angle`   | Déplacement de la base roulante par coordonnées
 ||
-`IPO X:valeur_x Y:valeur_y A:angle` | Initialisation de la Position de la base roulante
+`IPO X:valeur_x Y:valeur_y A:angle` | Initialisation de la position de la base roulante
 `POS`                               | Position de la base roulante
 
 

@@ -36,6 +36,8 @@ void main(void) {
   // Messages de démarrage:
   print_PC("\n\rMASTER init completed\n\r");
   TIME_wait(2000);
+	print_PC("(! : ne pas oublier de démarrer une épreuve avec 'D')\n\r");
+	TIME_wait(1000);
   print_PC("Waiting for instructions...\n\r");
   TIME_wait(1000);
   print_PC(">");
@@ -173,4 +175,5 @@ bit MASTER_endEpreuve() {
 void MASTER_exit() {
   MASTER_isEpreuveInProgress_flag = 0;
   SRLZR_stop();
+	POINTEUR_stop();
 }

@@ -20,33 +20,6 @@ unsigned int TIME_counter_buffer;
 unsigned int TIME_counter_1ms = 0;
 
 /**
- * Configuration du Timer 0 pour déclencher une interruption toutes les ms
- * Registres modifiés: TMOD (T0M0,T0M1), CKCON(T0M), TL0, TH0,
- *                     IE(PT0), IP(ET0), TCON(TF0,TR0)
- */
-void TIME_init_Timer0() {
-  // Timer 0 en mode 1: 16-bit Timer
-  TMOD |= (1 << 0);   // T0M0 = 1
-  TMOD &= ~(1 << 1);  // T0M1 = 0
-
-  // Utilise SYSCLK:
-  CKCON |= 1 << 3;  // T0M = 1
-
-  // Valeur de recharge du Timer:
-  TIME_counter_1ms = 65635 - SYSCLK / 1000;
-  TL0 = TIME_counter_1ms & 0x00FF;
-  TH0 = TIME_counter_1ms >> 8;
-
-  // Activation des interruptions:
-  PT0 = 1;  // Priorité élevée
-  ET0 = 1;  // Enable
-  TF0 = 0;  // RAZ Flag
-
-  // Activation du Timer 0:
-  TR0 = 1;
-}
-
-/**
  * Configuration du Timer 2 pour déclencher une interruption toutes les ms
  * Registres modifiés: T2CON (RCLK0, TCLK0, CPRL2, TF2, TR2), CKCON (T2M)
  *                     RCAP2H, RCAP2L, IP(PT2), IE(ET2)
@@ -115,3 +88,36 @@ bit TIME_flag_ms() { return TIME_flag; }
  * Initialise le flag indiquant les ms
  */
 void TIME_clear_ms_flag() { TIME_flag = 0; }
+
+
+
+/**
+ * Archives: 
+ */
+
+/**
+ * Configuration du Timer 0 pour déclencher une interruption toutes les ms
+ * Registres modifiés: TMOD (T0M0,T0M1), CKCON(T0M), TL0, TH0,
+ *                     IE(PT0), IP(ET0), TCON(TF0,TR0)
+ */
+/*void TIME_init_Timer0() {
+  // Timer 0 en mode 1: 16-bit Timer
+  TMOD |= (1 << 0);   // T0M0 = 1
+  TMOD &= ~(1 << 1);  // T0M1 = 0
+
+  // Utilise SYSCLK:
+  CKCON |= 1 << 3;  // T0M = 1
+
+  // Valeur de recharge du Timer:
+  TIME_counter_1ms = 65635 - SYSCLK / 1000;
+  TL0 = TIME_counter_1ms & 0x00FF;
+  TH0 = TIME_counter_1ms >> 8;
+
+  // Activation des interruptions:
+  PT0 = 1;  // Priorité élevée
+  ET0 = 1;  // Enable
+  TF0 = 0;  // RAZ Flag
+
+  // Activation du Timer 0:
+  TR0 = 1;
+}*/

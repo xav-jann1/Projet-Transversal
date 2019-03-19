@@ -37,7 +37,7 @@ void UART0_init() {
   XBR0 |= 1 << 2;
 
   // Sortie en Push-Pull:
-  P0MDOUT |= 1;
+  P0MDOUT |= 1;  // crossbar-pin
 
   // Configuration du Timer 1:
   TIMER1_config();

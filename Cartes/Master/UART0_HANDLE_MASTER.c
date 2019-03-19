@@ -38,14 +38,16 @@ void UART0_receive_handle_message(char* message) {
     if (strcmp(response, "rien") != 0) break;
   }
 
-  // S'il y a une erreur:
-  if (strcmp(response, "error") == 0) {
-    // Message d'erreur:
+  // Commande correctement exécutée:
+  if (strcmp(response, "ok") == 0) {
+		UART0_setColor(GREEN);
+    UART0_send("\r\n>");
+  }
+	
+	// Si erreur:
+	else if (strcmp(response, "error") == 0) {
     UART0_setColor(RED);
-    UART0_send("\r\n# ");
-    UART0_send(response);
     UART0_send("\r\n#");
-    UART0_resetColor();
   }
 
   // S'il y a une réponse:
@@ -55,14 +57,14 @@ void UART0_receive_handle_message(char* message) {
     UART0_send("\r\n> ");
     UART0_send(response);
     UART0_send("\r\n>");
-    UART0_resetColor();
   }
 
-  // Sinon:
+  // Sinon, si aucune commande reconnue:
   else {
     // Message d'erreur:
     UART0_setColor(RED);
     UART0_send("\r\n#");
-    UART0_resetColor();
   }
+	
+	UART0_resetColor();
 }
