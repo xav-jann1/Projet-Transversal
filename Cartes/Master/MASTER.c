@@ -13,6 +13,7 @@
 // Actionneurs:
 #include "../../Actionneurs/Serializer/SRLZR.h"
 #include "../../Actionneurs/Servomoteur/SERVO.h"
+#include "../../Actionneurs/Pointeur_lumineux/POINTEUR.h"
 
 // Capteurs:
 #include "../../Capteurs/Courant/COURANT.h"
@@ -41,7 +42,7 @@ void main(void) {
   UART0_resetColor();
 	
 	// Test UART1:
-	UART1_send("TEST\r\n");
+	UART1_send("fw\r\n");
 	
 	
   // Boucle principale:
@@ -74,6 +75,9 @@ void RTOS() {
   // Servomoteur:
   //   Si le servo s'est bien positionné:
   if (SERVO_update()) print_PC("AS H\r\n>");
+	
+	// Pointeur lumineux:
+	POINTEUR_update();
 
   // Télémètres:
   // INFRA_update();
@@ -102,11 +106,14 @@ void MASTER_init() {
    * Actionneurs:
    */
 
+  // Serializer:
+	SRLZR_init();
+	
   // Servomoteur:
   SERVO_init();
 	
-	// Serializer:
-	SRLZR_init();
+	// Pointeur lumineux:
+	POINTEUR_init();
 
   /**
    * Capteurs:

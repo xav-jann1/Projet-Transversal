@@ -32,6 +32,12 @@ bit POINTEUR_on();
 bit POINTEUR_off();
 
 /**
+ * Eteint complétement le pointeur lumineux et arrête la séquence d'allumage
+ * @return {bit} 0: ok, 1: error, pour savoir si la fonction s'est bien exécutée
+ */
+bit POINTEUR_stop();
+
+/**
  * Séquence d'allumage du pointeur lumineux
  * @param {int} I : intensité du pointeur (1 - 100)
  * @param {int} D : durée d'allumage (1 - 99)

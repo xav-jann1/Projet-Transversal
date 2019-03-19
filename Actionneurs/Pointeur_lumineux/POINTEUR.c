@@ -42,8 +42,7 @@ void POINTEUR_init() {
   XBR0 |= 1 << 3;
 
   // Sortie en Push-Pull:
-  // P0MDOUT |= 1 << 5; // todo
-  P0MDOUT |= 1 << 0;
+  P0MDOUT |= 1 << 4; // crossbar-pin
 
   // Par défaut, désactive le pointeur:
   POINTEUR_off();
@@ -55,7 +54,8 @@ void POINTEUR_init() {
  */
 void POINTEUR_interrupt() interrupt 9 {
   // RAZ flags:
-  PCA0CN &= ~(1 << 7 + 1);  // CF = 0, CCF0 = 0
+	CF = 0;
+	CCF0 = 0;
 }
 
 /**
@@ -136,6 +136,16 @@ bit POINTEUR_on() {
  * @return {bit} 0: ok, 1: error, pour savoir si la fonction s'est bien exécutée
  */
 bit POINTEUR_off() {
+  POINTEUR_pwm(0);
+  return 0;
+}
+
+/**
+ * Eteint complétement le pointeur lumineux et arrête la séquence d'allumage
+ * @return {bit} 0: ok, 1: error, pour savoir si la fonction s'est bien exécutée
+ */
+bit POINTEUR_stop() {
+  POINTEUR_allumage_inProgress = 0;
   POINTEUR_pwm(0);
   return 0;
 }
