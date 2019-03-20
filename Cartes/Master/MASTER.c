@@ -1,4 +1,5 @@
 #include "MASTER.h"
+#include <stdio.h>
 
 // Configuration 8051:
 #include "../Ressources/CONFIG_8051.h"
@@ -17,6 +18,7 @@
 
 // Capteurs:
 #include "../../Capteurs/Courant/COURANT.h"
+#include "../../Capteurs/Ultrason/ULTRA.h"
 
 /**
  * Variables de la carte Master:
@@ -36,7 +38,7 @@ void main(void) {
   // Messages de démarrage:
   print_PC("\n\rMASTER init completed\n\r");
   TIME_wait(2000);
-	print_PC("(! : ne pas oublier de démarrer une épreuve avec 'D')\n\r");
+	print_PC("(!:ne pas oublier de démarrer une épreuve avec 'D')\n\r");
 	TIME_wait(1000);
   print_PC("Waiting for instructions...\n\r");
   TIME_wait(1000);
@@ -82,8 +84,13 @@ void RTOS() {
 	POINTEUR_update();
 
   // Télémètres:
-  // INFRA_update();
-  // ULTRA_update();
+  if(ULTRA_update()) {
+	  int mesure = ULTRA_getMesure();
+
+		char string[20];
+		sprintf(string, "KOB XX:%d\r\n>", mesure);
+		UART0_send(string);
+	}
 }
 
 void MASTER_init() {
@@ -125,7 +132,7 @@ void MASTER_init() {
   // INFRA_init();
 
   // Télémètre ultrason:
-  // ULTRA_init();
+  ULTRA_init();
 
   // Mesure de courant:
   // COURANT_init();
