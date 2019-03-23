@@ -38,17 +38,17 @@ void main(void) {
   // Messages de démarrage:
   print_PC("\n\rMASTER init completed\n\r");
   TIME_wait(2000);
-	print_PC("(!:ne pas oublier de démarrer une épreuve avec 'D')\n\r");
-	TIME_wait(1000);
+  print_PC("(!:ne pas oublier de démarrer une épreuve avec 'D')\n\r");
+  TIME_wait(1000);
   print_PC("Waiting for instructions...\n\r");
   TIME_wait(1000);
   print_PC(">");
   UART0_resetColor();
-	
-	// Test UART1:
-	UART1_send("fw\r\n");
-	
-	
+  
+  // Test UART1:
+  UART1_send("fw\r\n");
+  
+  
   // Boucle principale:
   while (1) {
     UART0_update();
@@ -79,18 +79,18 @@ void RTOS() {
   // Servomoteur:
   //   Si le servo s'est bien positionné:
   if (SERVO_update()) print_PC("AS H\r\n>");
-	
-	// Pointeur lumineux:
-	POINTEUR_update();
+  
+  // Pointeur lumineux:
+  POINTEUR_update();
 
   // Télémètres:
   if(ULTRA_update()) {
-	  int mesure = ULTRA_getMesure();
+    int mesure = ULTRA_getMesure();
 
-		char string[20];
-		sprintf(string, "KOB XX:%d\r\n>", mesure);
-		UART0_send(string);
-	}
+    char string[20];
+    sprintf(string, "KOB XX:%d\r\n>", mesure);
+    UART0_send(string);
+  }
 }
 
 void MASTER_init() {
@@ -116,13 +116,13 @@ void MASTER_init() {
    */
 
   // Serializer:
-	SRLZR_init();
-	
+  SRLZR_init();
+  
   // Servomoteur:
   SERVO_init();
-	
-	// Pointeur lumineux:
-	POINTEUR_init();
+  
+  // Pointeur lumineux:
+  POINTEUR_init();
 
   /**
    * Capteurs:
@@ -182,5 +182,5 @@ bit MASTER_endEpreuve() {
 void MASTER_exit() {
   MASTER_isEpreuveInProgress_flag = 0;
   SRLZR_stop();
-	POINTEUR_stop();
+  POINTEUR_stop();
 }

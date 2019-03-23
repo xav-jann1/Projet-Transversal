@@ -54,8 +54,8 @@ void POINTEUR_init() {
  */
 void POINTEUR_interrupt() interrupt 9 {
   // RAZ flags:
-	CF = 0;
-	CCF0 = 0;
+  CF = 0;
+  CCF0 = 0;
 }
 
 /**

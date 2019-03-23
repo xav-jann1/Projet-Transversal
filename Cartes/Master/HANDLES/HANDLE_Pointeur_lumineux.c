@@ -58,7 +58,7 @@ char* HANDLE_Pointeur_lumineux(Commande* commande) {
       }
     }
     
-		// Démarre la séquence d'allumage:
+    // Démarre la séquence d'allumage:
     POINTEUR_allumage(I, D, E, N);
   }
 
