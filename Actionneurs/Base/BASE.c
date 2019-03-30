@@ -1,5 +1,6 @@
 #include "BASE.h"
 #include "../Serializer/SRLZR.h"
+#include "../../Cartes/Ressources/TIME_8051.h"
 
 #include <stdio.h>
 #include <math.h>  // pour atan2()
@@ -144,7 +145,7 @@ bit BASE_rotate90Right() { return BASE_rotate('D', 90); }
  * @param {char} sens : 'G' ou 'D', sens de la rotation (par défaut droite)
  * @return {bit} 0: ok, 1: error
  */
-bit BASE_fullRotation(char sens) { return BASE_rotate(sens, 360); }
+bit BASE_fullRotation(char sens) { return BASE_rotate(sens, 170); }
 
 /**  "G X:valeur_x Y:valeur_y A:angle"
  * Déplace la base à des coordonnées relatives
@@ -164,7 +165,7 @@ bit BASE_moveTo(char x, char y, int a) {
   if (a < -180 || a > 180) return 1;
 
   // Angle en direction de la position demandée:
-  theta = atan2(y, x);
+  theta = atan2(x, y) * 180.0f / M_PI;
 
   // Tourne la base en direction de la position demandée:
   if (theta > 0)
@@ -173,18 +174,18 @@ bit BASE_moveTo(char x, char y, int a) {
     BASE_rotate('D', (int)-theta);
 
   // Attend la fin de la rotation:
-  // wait()
+  TIME_wait(2000);
 
   // Déplace la base:
-  d = sqrt(x ^ 2 + y ^ 2);
-  v = 10;  // TODO: définir une vitesse optimale
+  d = sqrt(x * x + y * y);
+  v = 30;  // TODO: définir une vitesse optimale
   SRLZR_digo(d, v, d, v);
 
   // Attend la fin du déplacement:
-  // wait()
+  TIME_wait(2000);
 
   // Correction de la rotation pour s'orienter selon l'angle finale:
-  new_theta = theta - a;
+  new_theta = a - theta;
 
   // Tourne la base à la position de fin:
   if (new_theta > 0)

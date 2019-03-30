@@ -127,7 +127,7 @@ void SERVO_pos(char p) {
   TMR3RLH = timer_load >> 8;
 
   // Envoie un message dans $n ms, indiquant que le servo s'est bien positionné:
-  SERVO_wait_pos = 500;  // $n ms
+  SERVO_wait_pos = 1000;  // $n ms
 
   // Enregistre la nouvelle position du servo:
   SERVO_position = pos;

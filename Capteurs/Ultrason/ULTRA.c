@@ -67,10 +67,10 @@ void TIMER4_config() {
 
   // Utilise SYSCLK / 12:
   CKCON &= ~(1 << 6);  // T4M = 0
-  
+
   // Active interruption:
   T4CON &= ~(1 << 7);  // RAZ Flag: TF4 = 0
-  EIE2 |= 1 << 2;     // Enable: ET4 = 1
+  EIE2 |= 1 << 2;      // Enable: ET4 = 1
 }
 
 /**
@@ -98,7 +98,7 @@ int ULTRA_getMesure() { return ULTRA_mesure_cm; }
  */
 void ULTRA_delay_10us() {
   int i;
-  for (i = 0; i < 1; i++)
+  for (i = 0; i < 5; i++)
     ;
 }
 
@@ -129,11 +129,11 @@ void ULTRA_mesure_avant() {
   P3IF |= 1 << 2;  // IE6CF = 1
 
   // Déclenche le trigger du capteur:
-  EA=0;
+  EA = 0;
   ULTRA_avant_trig = 1;
   ULTRA_delay_10us();
   ULTRA_avant_trig = 0;
-  EA=1;
+  EA = 1;
 }
 
 /**
@@ -221,6 +221,9 @@ void ULTRA_interrupt_mesure_arriere() interrupt 19 {
     // Calcul de la distance: (cf. datasheet)
     ULTRA_mesure_cm = pulse_width / 58;
 
+    // Si pas d'obstacle:
+    if (ULTRA_mesure_cm > 200) ULTRA_mesure_cm = 0;
+
     // Détection sur front montant External Interrupt 7:
     P3IF |= 1 << 3;  // IE7CF = 1
 
@@ -236,16 +239,15 @@ void ULTRA_interrupt_mesure_arriere() interrupt 19 {
  * Fonction d'interruption du Timer 4 pour détecter quand il n'y pas d'obstacle
  */
 void ULTRA_interrupt_Timer4() interrupt 16 {
-  
   // Désactive le Timer 4:
   T4CON &= ~(1 << 2);  // TR4 = 0
-  
+
   // RAZ Flag:
   T4CON &= ~(1 << 7);  // TF4 = 0
-  
+
   // Distance indéfinie:
   ULTRA_mesure_cm = 0;
-  
+
   // Informe qu'une mesure a été réalisée:
-  ULTRA_mesure_flag = 1;
+  // if(!ULTRA_mesure_flag) ULTRA_mesure_flag = 1;
 }
