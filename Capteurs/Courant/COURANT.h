@@ -21,7 +21,7 @@ void COURANT_reset();
 int COURANT_mesure();
 
 /**
- * Met à jours le courant consommé depuis le début de l'épreuve
+ * Met à jour le courant consommé depuis le début de l'épreuve
  */
 void COURANT_update();
 

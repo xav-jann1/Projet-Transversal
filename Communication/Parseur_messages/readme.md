@@ -37,7 +37,7 @@ struct Commande {
 *(Un même indice entre `params` et `valeurs` correspond au même mot)*
 
 Si le **paramètre** ne possède pas de **valeur**, sa valeur dans la liste `valeurs` est `0xFF`.
-Si le **paramètre** est un nombre, sa valeur est enregistrée dans la liste `valeurs`, et `#` dans la liste `params`.
+Si le **paramètre** est un nombre, sa valeur est enregistrée dans la liste `valeurs`, et `'#'` dans la liste `params`.
 
 
 ## Fonctionnement
@@ -49,7 +49,7 @@ Le premier mot correspond alors au **code** de la commande, et les autres aux **
 Le **code** et le **nombre de paramètres** sont ainsi ajoutés à la `commande`, puis les listes `params` et `valeurs` se remplissent des **paramètres** et des **valeurs** de chaque mot (en les séparant par le caractère `':'`).
 
 Si le **paramètre** ne possède pas de **valeur**, sa valeur dans la liste `valeurs` est `0xFF`.
-Si le **paramètre** est un nombre, sa valeur est enregistrée dans la liste `valeurs`, et `#` dans la liste `params`.
+Si le **paramètre** est un nombre, sa valeur est enregistrée dans la liste `valeurs`, et `'#'` dans la liste `params`.
 
 
 ## Limites
@@ -66,7 +66,7 @@ code      |  3  |  `MOS`
 paramètre |  1  |  `P`
 valeur    |  4  |  `-100`
 
-Si le paramètre est seul et est un nommbre, sa valeur est enregistré dans la liste valeur.
+Si le paramètre est seul et est un nombre, sa valeur est enregistrée dans la liste `valeurs`.
 
 Ainsi, pour que le **code** soit enregistré dans une variable, il faut aussi ajouter le caractère de fin `\0`.
 

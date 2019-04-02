@@ -4,13 +4,19 @@
 #define SYSCLK 22118400
 
 /**
- * Organisation des pins :
+* Organisation des pins :
  *   Capteur avant:
  *     - Trig : P3.3
  *     - Echo : P3.6
  *   Capteur arrière:
  *     - Trig : P3.4
  *     - Echo : P3.7
+ *
+ * Pins du port : (!!! : 1 sur le port 3 indique port P3.0)
+ *     *7 *6
+ *     *5 *4
+ *     *3 *2
+ *     *1 *0		 
  */
 
 /**
@@ -147,9 +153,11 @@ void ULTRA_mesure_arriere() {
   P3IF |= 1 << 3;  // IE7CF = 1
 
   // Déclenche le trigger du capteur:
+	EA = 0;
   ULTRA_arriere_trig = 1;
   ULTRA_delay_10us();
   ULTRA_arriere_trig = 0;
+	EA = 1;
 }
 
 /**
