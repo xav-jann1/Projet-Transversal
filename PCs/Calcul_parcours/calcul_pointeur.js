@@ -1,59 +1,41 @@
-const fs = require('fs');
-
 // Hauteur du pointeur sur la base (à mesurer!!!):
 const pointeurHeight = 30;  // cm
 
 /**
- * Calcul les positions des servomoteurs pour correctement placer le pointeur lumineux sur la cible
- * @param terrain_filename {string} : chemin vers le fichier qui décrit le terrain
- * @param chemin_filename  {string} : chemin vers le fichier qui décrit le chemin de la base sur le terrain
+ * Calcule les positions des servomoteurs pour correctement placer le pointeur lumineux sur la cible
+ * @param x {int} : position de la cible selon l'axe x
+ * @param y {int} : position de la cible selon l'axe y
+ * @param z {int} : position de la cible selon l'axe z
  * @return pos = { H:int, V:int }
  */
-exports.computeServoPositions = (terrain_filename, chemin_filename) => {
-  // Charge les fichiers:
-  let terrain = fs.readFileSync(terrain_filename);
-  let chemin = fs.readFileSync(chemin_filename);
+exports.computeServoPositions = (Xc, Yc, Zc) => {
 
-  // Conversion en objet:
-  terrain = JSON.parse(terrain);
-  chemin = JSON.parse(chemin);
+  // Angle du vecteur entre la base et la cible (Xc, Yc):
+  let angleH = -Math.atan2(Yc, Xc) * 180 / Math.PI;
 
-  // Position de la cible:
-  let xc = terrain.cible.centre.x;
-  let yc = terrain.cible.centre.y;
-
-  // Position de la base:
-  let xb = chemin["position-tir_cible"].coordonnees.x;
-  let yb = chemin["position-tir_cible"].coordonnees.y;
-  let angle_cible = chemin["position-tir_cible"].angle;
-
-  // Vecteur horizontal entre base et cible (x, y):
-  let x = xc - xb;
-  let y = yc - yb;
-
-  // Angle du vecteur:
-  let angleH = - (Math.atan2(y, x) * 180 / Math.PI) + angle_cible;
-
-  console.log(`x: ${x}, y: ${y}, angleH: ${angleH}`);
+  //console.log(`x: ${Xc}, y: ${Yc} => angleH: ${angleH}`);
 
   // Vecteur vertical (longueur, z) :
-  let z = terrain.cible.hauteur - pointeurHeight;
-  let longueur = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-  let angleV = Math.atan2(z, longueur) * 180 / Math.PI - 90;
+  let z = Zc - pointeurHeight;
+  let longueur = Math.sqrt(Math.pow(Xc, 2) + Math.pow(Yc, 2));
+  let angleV = -Math.atan2(z, longueur) * 180 / Math.PI;
 
-  console.log(`z: ${z}, longueur: ${longueur}, angleV: ${angleV}`);
+  //console.log(`z: ${z}, longueur: ${longueur}, angleV: ${angleV}`);
 
   // Si le vecteur horizontal est dirigé à l'opposé de la cible:
-  if (Math.abs(angleH) > 90) {
-    angleH = angleH - Math.sign(angleH) * 180;
-    angleV += 90;
+  if (angleH < 0) {
+    angleH = 180 - Math.abs(angleH);
+    angleV = -angleV;
   }
 
-  console.log(`angleH: ${angleH}, angleV: ${angleV}`);
+  // Conversion entre [-90, 90]:
+  angleH -= 90;
 
   // Arrondi les angles:
   angleH = Math.round(angleH);
   angleV = Math.round(angleV);
+
+  //console.log(`angleH: ${angleH}, angleV: ${angleV}`);
 
   let pos = { H: angleH, V: angleV };
   return pos
