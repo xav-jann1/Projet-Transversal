@@ -47,4 +47,10 @@ void ULTRA_mesure_avant();
  */
 void ULTRA_mesure_arriere();
 
+/**
+ * Réalise une double mesures: 
+ *  capteur avant, puis capteur arrière (si le capteur avant n'a rien détecté)
+ */
+void ULTRA_double_mesures();
+
 #endif  // ULTRA_H

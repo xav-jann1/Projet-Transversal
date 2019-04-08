@@ -31,7 +31,8 @@ sbit ULTRA_arriere_trig = P3 ^ 4;
 unsigned int ULTRA_mesure_cm;
 
 // Flag de mesure:
-char ULTRA_mesure_flag = 0;
+bit ULTRA_mesure_flag = 0;
+char ULTRA_double_mesures_step = '\0';  // 'f': "forward", 'b': "backward"
 
 // Aide pour la mesure: délai entre deux coups de SYSCLK/12
 float TIMER_ticks_in_us = 1.0f / (SYSCLK / 12.0f * 0.000001);
@@ -81,13 +82,23 @@ void TIMER4_config() {
 
 /**
  * Fonction qui doit s'exécuter toutes les ms,
- * pour prévenir lorsque le capteur ultrason à réaliser une mesure
+ * pour prévenir lorsque le capteur ultrason à réalisé une mesure
  * @return {bit} 0: rien, 1: mesure réalisée
  */
 bit ULTRA_update() {
+	// Si une mesure est réalisée:
   if (ULTRA_mesure_flag == 1) {
-    ULTRA_mesure_flag = 0;
-    return 1;
+		ULTRA_mesure_flag = 0;
+		
+		// Si pendant 'double mesures':
+		if (ULTRA_double_mesures_step == 'f') {
+			// Lance la mesure arrière:
+			ULTRA_mesure_arriere();
+			ULTRA_double_mesures_step = 'b';	
+		}
+		
+		// Indique qu'une mesure a été réalisée:
+		return 1;
   }
 
   return 0;
@@ -158,6 +169,16 @@ void ULTRA_mesure_arriere() {
   ULTRA_delay_10us();
   ULTRA_arriere_trig = 0;
 	EA = 1;
+}
+
+/**
+ * Réalise une double mesures: 
+ *  capteur avant, puis capteur arrière (si le capteur avant n'a rien détecté)
+ */
+void ULTRA_double_mesures() {
+	// Commence par le capteur avant:
+	ULTRA_mesure_avant();
+	ULTRA_double_mesures_step = 'f';
 }
 
 /**
