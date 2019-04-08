@@ -25,10 +25,10 @@ char* response;
 /*** Communication ***/
 
 // Envoie une commande et attend la réponse du Serializer:
-char* SRLZR_sendCommandAndWait(char* command) {
+/*char* SRLZR_sendCommandAndWait(char* command) {
   SRLZR_sendCommand(command);
   return SRLZR_waitResponse();
-}
+}*/
 
 /**
  * Envoie une commande au Serializer:
@@ -41,22 +41,13 @@ bit SRLZR_sendCommand(char* c) {
   sprintf(command, "%s\r", c);
 
   UART1_send(command);
-
-  // Pour tests:
-  // puts(command);
-  // response = UART0_send(command);
-  // printf("%s", response);
-
-  // Si commande incomprise:
-  // if (strcmp(response, "NACK\r\n>") == 0) return 1;
-
   return 0;
 }
 
 // Attend une réponse du Serializer:
-char* SRLZR_waitResponse() {
+/*char* SRLZR_waitResponse() {
   // todo: ajouter TimeOut
-  /*
+  
   //extern char UART1_bufferIncomplete;
   int timeOut = 1000;
   while(UART1_bufferIncomplete == 1 && timeOut > 0) {
@@ -65,13 +56,13 @@ char* SRLZR_waitResponse() {
 
   if(timeOut <= 0) return "nope";
   return UART1_string_buffer;
-  */
+  
   return "OK";
-}
+}*/
 
-void SRLZR_update() {
+/*void SRLZR_update() {
   // SRLZR_
-}
+}*/
 
 /*
  * Configuration
@@ -79,12 +70,12 @@ void SRLZR_update() {
 
 /**
  * Initialisation de la communication avec le Serializer
- * Action: active et configure l'UART1
  * @return {bit} 0: ok, 1: error, pour savoir si la fonction s'est bien exécutée
  */
 bit SRLZR_init() {
   // SRLZR_stop();
-  // SRLZR_resetPID();
+	
+	SRLZR_resetPID();
 
   // Calcul du nombre de ticks des moteurs pour parcourir 1 dm:
   SRLZR_ticks_par_dm = BASE_ticks_par_tour / (BASE_diametre_roue * M_PI);
@@ -97,22 +88,22 @@ bit SRLZR_init() {
  * @return {char*} : version du firmware
  */
 // char* SRLZR_firmware() {
-char SRLZR_firmware() {
+/*char SRLZR_firmware() {
   return SRLZR_sendCommand("fw");
   // return SRLZR_sendCommandAndWait("fw");
-}
+}*/
 
 /**  "reset"
  * Redémarre la carte Serializer
  * @return {bit} 0: ok, 1: error, pour savoir si la fonction s'est bien exécutée
  */
-bit SRLZR_reset() { return SRLZR_sendCommand("reset"); }
+//bit SRLZR_reset() { return SRLZR_sendCommand("reset"); }
 
 /**  "restore"
  * Initialise et redémarre la carte aux paramètres par défaut d'usine
  * @return {bit} 0: ok, 1: error, pour savoir si la fonction s'est bien exécutée
  */
-bit SRLZR_restore() { return SRLZR_sendCommand("restore"); }
+//bit SRLZR_restore() { return SRLZR_sendCommand("restore"); }
 
 /** Config **/
 
@@ -121,7 +112,7 @@ bit SRLZR_restore() { return SRLZR_sendCommand("restore"); }
  * @param  {char} encoderType : 0,1 - (0:simple ou 1:quadraure)
  * @return {bit} 0: ok, 1: error, pour savoir si la fonction s'est bien exécutée
  */
-bit SRLZR_setEncoderType(char encoderType) {
+/*bit SRLZR_setEncoderType(char encoderType) {
   char command[20];
 
   // Si encoderType != 0,1:
@@ -130,14 +121,14 @@ bit SRLZR_setEncoderType(char encoderType) {
   sprintf(command, "cfg enc %d", encoderType);
 
   return SRLZR_sendCommand(command);
-}
+}*/
 
 /**  "cfg baud baudRate"
  * Modication de la vitesse de communication
  * @param  {int} baud : 0-5, 2400, 4800, 9600, 19200, 57600, 115200
  * @return {bit} 0: ok, 1: error, pour savoir si la fonction s'est bien exécutée
  */
-bit SRLZR_setBaud(int baud) {
+/*bit SRLZR_setBaud(int baud) {
   // TODO:
   // Problème pour 115200: int sur 2 octets => 2^16=65536 < 115200
   // Solution : transformer int en char* -> utiliser des 'strcmp()'
@@ -150,14 +141,14 @@ bit SRLZR_setBaud(int baud) {
     return SRLZR_sendCommand(command);
   } else
     return 0;
-}
+}*/
 
 /**  "cfg units unit_type"
  * Configure l'unité pour la lecture des capteurs
  * @param  {char} units : 0,1,2 (0:metric, 1:imperial, 2:raw)
  * @return {bit} 0: ok, 1: error, pour savoir si la fonction s'est bien exécutée
  */
-bit SRLZR_setUnits(int units) {
+/*bit SRLZR_setUnits(int units) {
   char command[20];
 
   // Si units != 0,1,2:
@@ -165,25 +156,25 @@ bit SRLZR_setUnits(int units) {
 
   sprintf(command, "cfg units %d", units);
   return SRLZR_sendCommand(command);
-}
+}*/
 
 /**  "cfg enc"
  * Renvoie la configuration des encodeurs
  * @return {char} : '0','1' - (0:simple ou 1:quadrature)
  */
-bit SRLZR_getEncoderType() { return SRLZR_sendCommand("cfg enc"); }
+//bit SRLZR_getEncoderType() { return SRLZR_sendCommand("cfg enc"); }
 
 /**  "cfg baud"
  * Renvoie la vitesse de communication utilisée (baud rate)
  * @return {int} : baud_rate
  */
-bit SRLZR_getBaud() { return SRLZR_sendCommand("cfg baud"); }
+//bit SRLZR_getBaud() { return SRLZR_sendCommand("cfg baud"); }
 
 /**  "cfg units"
  * Renvoie l'unité utilisée pour les capteurs
  * @return {char} : 0,1,2 - (0:metric, 1:imperial, 2:raw)
  */
-bit SRLZR_getUnits() { return SRLZR_sendCommand("cfg units"); }
+//bit SRLZR_getUnits() { return SRLZR_sendCommand("cfg units"); }
 
 /** PID **/
 
@@ -196,23 +187,23 @@ bit SRLZR_getUnits() { return SRLZR_sendCommand("cfg units"); }
  * @param  {int} loop : paramètre L du PIDL (Loop)
  * @return {bit} 0: ok, 1: error, pour savoir si la fonction s'est bien exécutée
  */
-bit SRLZR_setVPID(int p, int i, int d, int loop) {
+/*bit SRLZR_setVPID(int p, int i, int d, int loop) {
   char command[30];
   sprintf(command, "vpid %d:%d:%d:%d", p, i, d, loop);
   return SRLZR_sendCommand(command);
-}
+}*/
 
 /**  "vpid"
  * Renvoie la configuration du VPID
  * @return {char*} : "P:p I:i D:d L:loop"
  */
-char* SRLZR_getVPID() {
+/*char* SRLZR_getVPID() {
   char* response;
 
   SRLZR_sendCommand("vpid");
   response = SRLZR_waitResponse();
   return response;
-}
+}*/
 
 // DPID:
 /**  "dpid prop:integ:deriv:accel"
@@ -223,20 +214,20 @@ char* SRLZR_getVPID() {
  * @param  {int} a : paramètre A du PIDA (Acceleration)
  * @return {bit} 0: ok, 1: error, pour savoir si la fonction s'est bien exécutée
  */
-bit SRLZR_setDPID(int p, int i, int d, int a) {
+/*bit SRLZR_setDPID(int p, int i, int d, int a) {
   char command[30];
   sprintf(command, "dpid %d:%d:%d:%d", p, i, d, a);
   return SRLZR_sendCommand(command);
-}
+}*/
 
 /**  "dpid"
  * Renvoie la configuration du DPID
  * @return {char*} : "P:p I:i D:d A:a"
  */
-char* SRLZR_getDPID() {
+/*char* SRLZR_getDPID() {
   SRLZR_sendCommand("dpid");
   return SRLZR_waitResponse();
-}
+}*/
 
 /**  "rpid s"
  * Initialise le PID pour la base utilisée (Stinger)
@@ -278,11 +269,11 @@ bit SRLZR_digo(float d1, int v1, float d2, int v2) {
  * @param  {int} v2 : -100 - 100, pwm du moteur 2
  * @return {bit} 0: ok, 1: error, pour savoir si la fonction s'est bien exécutée
  */
-bit SRLZR_mogo(int v1, int v2) {
+/*bit SRLZR_mogo(int v1, int v2) {
   char command[30];
   sprintf(command, "mogo 1:%d 2:%d", v1, v2);
   return SRLZR_sendCommand(command);
-}
+}*/
 
 /**  "pwm 1:pwm 2:pwm"
  * Alimente directement les moteurs par PWM
@@ -308,7 +299,7 @@ bit SRLZR_pwm(int v1, int v2) {
  * @param  {int} v2 : -100 - 100, pwm du moteur 2
  * @return {bit} 0: ok, 1: error, pour savoir si la fonction s'est bien exécutée
  */
-bit SRLZR_pwmWithRate(int r, int v1, int v2) {
+/*bit SRLZR_pwmWithRate(int r, int v1, int v2) {
   char command[30];
 
   // Vérification des paramètre: -100 <= v <= 100
@@ -317,16 +308,16 @@ bit SRLZR_pwmWithRate(int r, int v1, int v2) {
 
   sprintf(command, "pwm r:%d 1:%d 2:%d", r, v1, v2);
   return SRLZR_sendCommand(command);
-}
+}*/
 
 /**  "vel"
  * Renvoie la vitesse des moteurs (en lien avec le PIDL)
  * @return {char*} : "v1 v2"
  */
-bit SRLZR_getVel() {
+/*bit SRLZR_getVel() {
   return SRLZR_sendCommand("vel");
   // return SRLZR_waitResponse();
-}
+}*/
 
 /**  "pids"
  * Renvoie l'état du pid lors de l'utilisation de la commande "digo"
