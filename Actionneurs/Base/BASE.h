@@ -5,6 +5,16 @@
  * Déplacement 
  */
 
+/**
+ * Fonction déclenchée toutes les ms pour mettre à jour le déplacement de la base
+ */
+void BASE_update();
+
+/**
+ * Etapes pour réaliser le déplacement évolué
+ */
+void BASE_deplacement_next_step();
+
 /**  "IPO X:valeur_x Y:valeur_y A:angle"
  * Initialisation de la position enregistrée sur la base
  * @param {int} x : -99 - 99 dm, position selon l'axe x

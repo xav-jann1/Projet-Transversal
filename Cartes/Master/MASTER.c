@@ -12,6 +12,7 @@
 #include "../../Communication/UART/UART1.h"
 
 // Actionneurs:
+#include "../../Actionneurs/Base/BASE.h"
 #include "../../Actionneurs/Serializer/SRLZR.h"
 #include "../../Actionneurs/Servomoteur/SERVO.h"
 #include "../../Actionneurs/Pointeur_lumineux/POINTEUR.h"
@@ -46,12 +47,13 @@ void main(void) {
   UART0_resetColor();
   
   // Test UART1:
-  UART1_send("fw\r\n");
-  
+  UART1_send("pids\r");
   
   // Boucle principale:
   while (1) {
     UART0_update();
+    UART1_update();
+		SPI_update();
 
     // Toutes les ms:
     if (TIME_flag_ms()) {
@@ -75,6 +77,9 @@ void print_PC(char* string) { UART0_send(string); }
 void RTOS() {
   // Mesure de courant:
   // COURANT_update();
+	
+	// Base:
+	BASE_update();
 
   // Servomoteur:
   //   Si le servo s'est bien positionné:
@@ -93,6 +98,9 @@ void RTOS() {
   }
 }
 
+/**
+ * Initialisation de tous les périphériques 
+ */
 void MASTER_init() {
   // Initialisation du 8051:
   CONFIG_init();
@@ -109,7 +117,7 @@ void MASTER_init() {
   UART1_init();
 
   // SPI pour Slave:
-  // SPI_init();
+  SPI_init();
 
   /**
    * Actionneurs:
@@ -122,7 +130,7 @@ void MASTER_init() {
   SERVO_init();
   
   // Pointeur lumineux:
-  POINTEUR_init();
+  POINTEUR_init(); //temp
 
   /**
    * Capteurs:

@@ -1,8 +1,10 @@
 #include "BASE.h"
 #include "../Serializer/SRLZR.h"
-#include "../../Cartes/Ressources/TIME_8051.h"
+//#include "../../Cartes/Ressources/TIME_8051.h"
+#include "../../Communication/UART/UART1.h"
 
 #include <stdio.h>
+#include <string.h>
 #include <math.h>  // pour atan2()
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -15,6 +17,94 @@
 char BASE_speed = 20;  // %
 int BASE_x = 0, BASE_y = 0, BASE_angle = 0;
 float BASE_rayon_entre_roues = 11.20;  // dm
+
+// Déplacement évolué:
+bit BASE_deplacement_inProgress = 0;
+unsigned int BASE_deplacement_timeout_ms = 0;
+bit BASE_send2SRLZR = 1;
+unsigned char BASE_deplacement_step = 0;
+char BASE_deplacement_x, BASE_deplacement_y;
+int BASE_deplacement_a;
+float BASE_deplacement_theta;
+
+/**
+ * Fonction déclenchée toutes les ms pour mettre à jour le déplacement de la base
+ */
+void BASE_update() {
+	if (BASE_deplacement_inProgress == 1) {
+		// TimeOut pour continuer le déplacement, même sans réponse du SRLZR:
+		BASE_deplacement_timeout_ms++;
+		
+		// Envoie la commande 'pids' au Serializer, pour connaître l'état du PID:
+		if (BASE_send2SRLZR == 1) {
+			SRLZR_PIDstate();
+			BASE_send2SRLZR = 0;
+		}
+		
+	  // Attend la fin du déplacement:
+		else if (UART1_hasResponse() == 1) {
+			char response[10];
+			strcpy(response, UART1_getResponse());
+			
+			if (response[0] == '1' || BASE_deplacement_timeout_ms < 2000) {
+				BASE_deplacement_next_step();
+				BASE_deplacement_timeout_ms = 0;
+			}
+			
+			BASE_send2SRLZR = 1;
+		}
+		
+	}
+}
+ 
+/**
+ * Etapes pour réaliser le déplacement évolué
+ */
+void BASE_deplacement_next_step() {
+	BASE_deplacement_step++;
+	
+  // Rotation:
+	if(BASE_deplacement_step == 1) {
+		// Angle en direction de la position demandée:
+    BASE_deplacement_theta = atan2(BASE_deplacement_x, BASE_deplacement_y) * 180.0f / M_PI;
+		
+	  // Tourne la base en direction de la position demandée:
+    if (BASE_deplacement_theta > 0)
+      BASE_rotate('G', (int)BASE_deplacement_theta);
+    else
+      BASE_rotate('D', (int)-BASE_deplacement_theta);
+	}
+	
+	// Déplace la base:
+	else if(BASE_deplacement_step == 2) {
+		float d, v;
+		d = sqrt(BASE_deplacement_x * BASE_deplacement_x + BASE_deplacement_y * BASE_deplacement_y);
+		v = 30;  // TODO: définir une vitesse optimale
+		SRLZR_digo(d, v, d, v);
+		
+		// Enregistrement de la nouvelle position:
+    BASE_x += BASE_deplacement_x;
+    BASE_y += BASE_deplacement_y;
+	}
+	
+	// Rotation:
+	else if(BASE_deplacement_step == 3) {
+		// Correction de la rotation pour s'orienter selon l'angle finale:
+    float new_theta = BASE_deplacement_a - BASE_deplacement_theta;
+
+    // Tourne la base à la position de fin:
+    if (new_theta > 0)
+      BASE_rotate('G', (int)new_theta);
+    else
+      BASE_rotate('D', (int)-new_theta);
+
+    // Enregistrement de la nouvelle position:
+    BASE_angle += BASE_deplacement_a;
+		
+		// Fin du déplacement:
+		BASE_deplacement_inProgress = 0;
+	}
+}
 
 /**  "IPO X:valeur_x Y:valeur_y A:angle"
  * Initialisation de la position enregistrée sur la base
@@ -156,47 +246,21 @@ bit BASE_fullRotation(char sens) { return BASE_rotate(sens, 170); }
  * @return {bit} 0: ok, 1: error
  */
 bit BASE_moveTo(char x, char y, int a) {
-  int d, v;
-  float theta, new_theta;
 
   // Vérifications:
   if (x < -99 || x > 99) return 1;
   if (y < -99 || y > 99) return 1;
   if (a < -180 || a > 180) return 1;
 
-  // Angle en direction de la position demandée:
-  theta = atan2(x, y) * 180.0f / M_PI;
-
-  // Tourne la base en direction de la position demandée:
-  if (theta > 0)
-    BASE_rotate('G', (int)theta);
-  else
-    BASE_rotate('D', (int)-theta);
-
-  // Attend la fin de la rotation:
-  TIME_wait(2000);
-
-  // Déplace la base:
-  d = sqrt(x * x + y * y);
-  v = 30;  // TODO: définir une vitesse optimale
-  SRLZR_digo(d, v, d, v);
-
-  // Attend la fin du déplacement:
-  TIME_wait(2000);
-
-  // Correction de la rotation pour s'orienter selon l'angle finale:
-  new_theta = a - theta;
-
-  // Tourne la base à la position de fin:
-  if (new_theta > 0)
-    BASE_rotate('G', (int)new_theta);
-  else
-    BASE_rotate('D', (int)-new_theta);
-
-  // Enregistrement de la nouvelle position:
-  BASE_x += x;
-  BASE_y += y;
-  BASE_angle += a;
+	// Enregistrement du déplacement:
+	BASE_deplacement_x = x;
+	BASE_deplacement_y = y;
+	BASE_deplacement_a = a;
+	
+	// Pour commencer le déplacement:
+	BASE_send2SRLZR = 0;
+	BASE_deplacement_timeout_ms = 0;
+	BASE_deplacement_inProgress = 1;
 
   return 0;
 }

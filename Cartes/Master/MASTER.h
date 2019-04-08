@@ -2,12 +2,6 @@
 #define MASTER_H
 
 /**
- * Fonction déclenchée lorsqu'une ligne est reçue sur l'UART0
- * @param {char*} message : message reçu
- */
-void UART0_receive_handle(char* message);
-
-/**
  * Envoie un message au PC Centrale de Commande
  * @param {char*} string : message à envoyer
  */
