@@ -1,4 +1,8 @@
 #ifdef SLAVE
+#include "../../Cartes/Slave/SPI_HANDLE_SLAVE.h"
+#else
+void SPI_receive_handle_message(char* message);
+#endif
 
 #include "SPI_SLAVE.h"
 #include "../../Cartes/Ressources/CONFIG_8051.h"
@@ -17,9 +21,6 @@ char SPI0_receive_handle;
  * Registres modifiés: P0MDOUT
  */
 void SPI_init() {
-  // Global interrupt enabled
-  IE |= 0x80;
-
   P0MDOUT |= 1 << 1;  // Output : P0.1 et P0.4
   P0MDOUT &= ~(1 << 2 + 1 << 3);  // Input : P0.2 et P0.3
   P0_2 = 1;
@@ -49,7 +50,7 @@ void SPI_init() {
  */
 void SPI_update() {
   if (SPI0_receive_handle == 1) {
-    SPI_receive_handle_buffer(SPI0_receive_buffer);
+    SPI_receive_handle_message(SPI0_receive_buffer);
     SPI0_receive_handle = 0;
   }
 }
@@ -67,13 +68,9 @@ void SPI_send(char* string) {}
 void SPI_sendChar(char c) {}
 
 /**
- * Fonction déclenchée lorsqu'une ligne est reçue sur la SPI
- * @param {char*} buffer : ligne reçue par la SPI
+ * Fonction d'interruption de la SPI
  */
-void SPI_receive_handle_buffer(char* buffer) {}
-
 void SPI_interrupt() interrupt 6 {
-  LED = 1;
 
   // Réception:
   if (SPIF == 1) {
@@ -94,7 +91,7 @@ void SPI_interrupt() interrupt 6 {
       SPI0_receive_buffer[SPI0_receive_i] = '\0';
       SPI0_receive_i = 0;
 
-      // Interprète le message reçu (dans UART0_update):
+      // Interprète le message reçu (dans SPI_update):
       SPI0_receive_handle = 1;
     }
 
@@ -103,4 +100,18 @@ void SPI_interrupt() interrupt 6 {
   }
 }
 
+#ifndef SLAVE
+/**
+ * Fonction déclenchée par défaut lorsqu'une ligne est reçu sur la SPI
+ * @param {char*} buffer : ligne reçu par la SPI
+ */
+void UART0_receive_handle_message(char* buffer) {
+  //SPI_send("\r\n");
+
+  // Renvoie la ligne reçue:
+  //SPI_send(buffer);
+  //SPI_send("\r\n");
+
+  //SPI_resetColor();
+}
 #endif
