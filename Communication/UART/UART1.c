@@ -1,5 +1,13 @@
+#ifdef MASTER
+#include "../../Cartes/Master/UART1_HANDLE_MASTER.h"
+#else
+#include "UART0.h"
+void UART1_receive_handle_message(char* buffer);
+#endif
+
 #include "UART1.h"
 #include "c8051F020.h"
+#include "string.h"
 
 /**
  * Variables de l'UART1:
@@ -11,8 +19,9 @@ char UART1_transmit_busy = 0;
 // Réception:
 char UART1_receive_buffer[50];
 unsigned char UART1_receive_i = 0;
-char UART1_receive_isCode = 1;
 char UART1_receive_handle = 0;
+char UART1_receive_response[10];
+bit UART1_receive_hasResponse_flag = 0;
 
 /**
  * Initialisation de l'UART1
@@ -68,8 +77,48 @@ void UART1_update() {
   // Traitement de la ligne:
   if (UART1_receive_handle == 1) {
     UART1_receive_handle = 0;
-    UART1_receive_handle_buffer(UART1_receive_buffer);
+    UART1_receive_handle_message(UART1_receive_buffer);
   }
+	
+	// S'il y a eu une réponse:
+	if (UART1_receive_hasResponse_flag == 1) {
+		
+	}
+}
+
+/**
+ * Récupère une réponse reçue sur l'UART1
+ * @param response {char*} : chaîne de caractères reçu
+ */
+void UART1_setResponse(char* response) {
+	// Enregistre la réponse:
+	strcpy(UART1_receive_response, response);
+	
+	// Active le flag:
+	UART1_receive_hasResponse_flag = 1;
+}
+
+/**
+ * Vérifie si une réponse a été reçue sur l'UART1
+ * @return {bit} 0: rien, 1: message reçu
+ */
+bit UART1_hasResponse() { return UART1_receive_hasResponse_flag; }
+
+/**
+ * Renvoie la réponse reçue sur l'UART1
+ * @return {char*} réponse reçue
+ */
+char* UART1_getResponse() {	
+	UART1_receive_hasResponse_flag = 0;
+	return UART1_receive_response;
+}
+
+/**
+ * Initialise la réponse reçue par l'UART1, pour en recevoir une nouvelle
+ */
+void UART1_resetResponse() {	
+	UART1_receive_hasResponse_flag = 0;
+	strcpy(UART1_receive_response, "rien");
 }
 
 /**
@@ -112,7 +161,7 @@ void UART1_interrupt() interrupt 20 {
   // Réception:
   if (SCON1 & 1 == 1) {
     // Récupère le caractère reçu:
-    char c = SBUF0;
+    char c = SBUF1;
 
     // Vérification du caractère:
     if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
@@ -120,10 +169,9 @@ void UART1_interrupt() interrupt 20 {
       // Ajoute le caractère au buffer:
       UART1_receive_buffer[UART1_receive_i] = c;
       UART1_receive_i++;
-
     }
 
-    // Si fin de la ligne:
+    // Si fin de la réponse:
     else if (c == '\r') {
       // Ajoute le caractère de fin:
       UART1_receive_buffer[UART1_receive_i] = '\0';
@@ -138,20 +186,21 @@ void UART1_interrupt() interrupt 20 {
   }
 }
 
+
+#ifndef MASTER
 /**
  * Fonction déclenchée lorsqu'une ligne est reçu sur l'UART1
  * @param {char*} buffer : ligne reçu par l'UART1
  */
-void UART1_receive_handle_buffer(char* buffer) {
-  UART1_send("\r\n");
+void UART1_receive_handle_message(char* buffer) {
+  UART0_send("\r\n");
 
   // Renvoie la ligne reçue:
-  UART1_send(buffer);
+  UART0_send(buffer);
 
-  UART1_send("\r\n");
-
-  UART1_receive_isCode = 1;
+  UART0_send("\r\n");
 }
+#endif
 
 /**
  * Archives:

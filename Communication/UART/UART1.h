@@ -20,6 +20,29 @@ void UART1_TIMER1_config();
 void UART1_update();
 
 /**
+ * Récupère une réponse reçue sur l'UART1
+ * @param response {char*} : chaîne de caractères reçu
+ */
+void UART1_setResponse(char* response);
+
+/**
+ * Vérifie si une réponse a été reçue sur l'UART1
+ * @return {bit} 0: rien, 1: message reçu
+ */
+bit UART1_hasResponse();
+
+/**
+ * Renvoie la réponse reçue sur l'UART1
+ * @return {char*} réponse reçue
+ */
+char* UART1_getResponse();
+
+/**
+ * Initialise la réponse reçue par l'UART1, pour en recevoir une nouvelle
+ */
+void UART1_resetResponse();
+
+/**
  * Envoie un caractère par l'UART1
  * @param {char} c : caractère à envoyer
  */
