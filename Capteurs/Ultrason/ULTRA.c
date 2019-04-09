@@ -16,7 +16,7 @@
  *     *7 *6
  *     *5 *4
  *     *3 *2
- *     *1 *0		 
+ *     *1 *0     
  */
 
 /**
@@ -86,19 +86,19 @@ void TIMER4_config() {
  * @return {bit} 0: rien, 1: mesure réalisée
  */
 bit ULTRA_update() {
-	// Si une mesure est réalisée:
+  // Si une mesure est réalisée:
   if (ULTRA_mesure_flag == 1) {
-		ULTRA_mesure_flag = 0;
-		
-		// Si pendant 'double mesures':
-		if (ULTRA_double_mesures_step == 'f') {
-			// Lance la mesure arrière:
-			ULTRA_mesure_arriere();
-			ULTRA_double_mesures_step = 'b';	
-		}
-		
-		// Indique qu'une mesure a été réalisée:
-		return 1;
+    ULTRA_mesure_flag = 0;
+    
+    // Si pendant 'double mesures':
+    if (ULTRA_double_mesures_step == 'f') {
+      // Lance la mesure arrière:
+      ULTRA_mesure_arriere();
+      ULTRA_double_mesures_step = 'b';  
+    }
+    
+    // Indique qu'une mesure a été réalisée:
+    return 1;
   }
 
   return 0;
@@ -164,11 +164,11 @@ void ULTRA_mesure_arriere() {
   P3IF |= 1 << 3;  // IE7CF = 1
 
   // Déclenche le trigger du capteur:
-	EA = 0;
+  EA = 0;
   ULTRA_arriere_trig = 1;
   ULTRA_delay_10us();
   ULTRA_arriere_trig = 0;
-	EA = 1;
+  EA = 1;
 }
 
 /**
@@ -176,9 +176,9 @@ void ULTRA_mesure_arriere() {
  *  capteur avant, puis capteur arrière (si le capteur avant n'a rien détecté)
  */
 void ULTRA_double_mesures() {
-	// Commence par le capteur avant:
-	ULTRA_mesure_avant();
-	ULTRA_double_mesures_step = 'f';
+  // Commence par le capteur avant:
+  ULTRA_mesure_avant();
+  ULTRA_double_mesures_step = 'f';
 }
 
 /**

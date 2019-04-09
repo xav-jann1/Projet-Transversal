@@ -79,11 +79,11 @@ void UART1_update() {
     UART1_receive_handle = 0;
     UART1_receive_handle_message(UART1_receive_buffer);
   }
-	
-	// S'il y a eu une réponse:
-	if (UART1_receive_hasResponse_flag == 1) {
-		
-	}
+  
+  // S'il y a eu une réponse:
+  if (UART1_receive_hasResponse_flag == 1) {
+    
+  }
 }
 
 /**
@@ -91,11 +91,11 @@ void UART1_update() {
  * @param response {char*} : chaîne de caractères reçu
  */
 void UART1_setResponse(char* response) {
-	// Enregistre la réponse:
-	strcpy(UART1_receive_response, response);
-	
-	// Active le flag:
-	UART1_receive_hasResponse_flag = 1;
+  // Enregistre la réponse:
+  strcpy(UART1_receive_response, response);
+  
+  // Active le flag:
+  UART1_receive_hasResponse_flag = 1;
 }
 
 /**
@@ -108,17 +108,17 @@ bit UART1_hasResponse() { return UART1_receive_hasResponse_flag; }
  * Renvoie la réponse reçue sur l'UART1
  * @return {char*} réponse reçue
  */
-char* UART1_getResponse() {	
-	UART1_receive_hasResponse_flag = 0;
-	return UART1_receive_response;
+char* UART1_getResponse() {  
+  UART1_receive_hasResponse_flag = 0;
+  return UART1_receive_response;
 }
 
 /**
  * Initialise la réponse reçue par l'UART1, pour en recevoir une nouvelle
  */
-void UART1_resetResponse() {	
-	UART1_receive_hasResponse_flag = 0;
-	strcpy(UART1_receive_response, "rien");
+void UART1_resetResponse() {  
+  UART1_receive_hasResponse_flag = 0;
+  strcpy(UART1_receive_response, "rien");
 }
 
 /**

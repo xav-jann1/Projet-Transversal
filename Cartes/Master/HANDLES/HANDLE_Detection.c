@@ -20,7 +20,9 @@ char* HANDLE_Detection(Commande* commande) {
 
   // MOU : Détection d’obstacle unique
   if (strcmp("MOU", cmd) == 0) {
-    ULTRA_mesure_avant();
+    if (nbParams == 0) ULTRA_mesure_avant();
+    else if (nbParams == 1 && params[0] == 'D') ULTRA_double_mesures();
+    else hasError = 1;
   }
 
   // MOB : Détection des obstacles par balayage

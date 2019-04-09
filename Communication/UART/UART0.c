@@ -61,7 +61,7 @@ void UART0_init() {
  */
 void TIMER1_config() {
   // Timer 1 en mode 2 : auto-reload
-  TMOD &= ~(1 << 4);  // T1M0 = 0,
+  TMOD &= ~(1 << 4);  // T1M0 = 0;
   TMOD |= (1 << 5);   // T1M1 = 1;
 
   // Choix du timer 1 pour l'UART0:
@@ -186,6 +186,7 @@ void UART0_interrupt() interrupt 4 {
         UART0_color = CYAN;  // Param
         UART0_update_color = 1;
       }
+
       // Valeur de paramètre:
       else if (c == ':') {
         UART0_color = YELLOW;  // Valeur

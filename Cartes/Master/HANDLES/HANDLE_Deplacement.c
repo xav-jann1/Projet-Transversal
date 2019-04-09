@@ -5,6 +5,7 @@
 #include "../../../Communication/Parseur_messages/PARSEUR.h"
 
 #include "../../../Actionneurs/Base/BASE.h"
+#include "../../../Actionneurs/Serializer/SRLZR.h"
 
 /**
  * Déplacement:
@@ -103,6 +104,14 @@ char* HANDLE_Deplacement(Commande* commande) {
   else if (strcmp("POS", cmd) == 0) {
     strcpy(response, BASE_getPosition());
   }
+  
+  // BONUS:
+  
+  // SPI : envoie 'pids' à la carte SRLZR
+  else if (strcmp("SPI", cmd) == 0) {
+    hasError = SRLZR_PIDstate();
+  }
+  
   // Si aucune commande reconnue:
   else
     isCommand = 0;
