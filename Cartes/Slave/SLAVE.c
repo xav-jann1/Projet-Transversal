@@ -1,5 +1,6 @@
 #include "SLAVE.h"
 #include <stdio.h>
+#include "../../Cartes/Ressources/c8051F020.h"
 
 // Configuration 8051:
 #include "../Ressources/CONFIG_8051.h"
@@ -51,7 +52,7 @@ void main(void) {
  * Envoie un message à la carte Master
  * @param {char*} string : message à envoyer
  */
-void print_MASTER(char* string) { SPI_send(string); }
+void print_MASTER(char* string) { UART0_send(string); } //SPI_send(string); }
 
 /**
  * Fonction à exécuter toutes les ms pour mettre à jour tous les périphériques
@@ -81,7 +82,7 @@ void SLAVE_init() {
   SPI_init();
 
   // UART0 pour STM32:
-  // UART0_init();
+  UART0_init();
 
   /**
    * Actionneurs:
@@ -99,6 +100,18 @@ void SLAVE_init() {
 
   // Prise de vue:
   // CAMERA_init();
+	
+		/**
+   * Crossbar:
+	 */
+	
+  // UART0.TX: sortie en Push-Pull
+  P0MDOUT |= 1;  // P0.0
+	
+	// SPI:
+	P0MDOUT |= (1 << 3);   // Push-pull : MISO(P0.3)
+  P0MDOUT &= ~((1 << 4) + (1 << 6));  // Input : MOSI(P0.4),  NSS(P0.6)
+	// + SPI_MOSI = 1 dans SPI_SLAVE.c
 }
 
 /**

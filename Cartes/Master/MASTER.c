@@ -1,5 +1,6 @@
 #include "MASTER.h"
 #include <stdio.h>
+#include "c8051F020.h"
 
 // Configuration 8051:
 #include "../Ressources/CONFIG_8051.h"
@@ -15,7 +16,6 @@
 #include "../../Actionneurs/Base/BASE.h"
 #include "../../Actionneurs/Serializer/SRLZR.h"
 #include "../../Actionneurs/Servomoteur/SERVO.h"
-#include "../../Actionneurs/Pointeur_lumineux/POINTEUR.h"
 
 // Capteurs:
 #include "../../Capteurs/Courant/COURANT.h"
@@ -30,7 +30,7 @@ bit MASTER_isEpreuveInProgress_flag = 0;
 unsigned char MASTER_epreuve = 1;
 
 /**
- * Fonction principale 
+ * Fonction principale
  */
 void main(void) {
   // Initialisation de la carte et des périphériques:
@@ -45,15 +45,15 @@ void main(void) {
   TIME_wait(1000);
   print_PC(">");
   UART0_resetColor();
-  
+
   // Test UART1:
   UART1_send("pids\r");
-  
+
   // Boucle principale:
   while (1) {
     UART0_update();
     UART1_update();
-		SPI_update();
+    SPI_update();
 
     // Toutes les ms:
     if (TIME_flag_ms()) {
@@ -77,19 +77,16 @@ void print_PC(char* string) { UART0_send(string); }
 void RTOS() {
   // Mesure de courant:
   // COURANT_update();
-	
-	// Base:
-	BASE_update();
+
+  // Base:
+  BASE_update();
 
   // Servomoteur:
   //   Si le servo s'est bien positionné:
   if (SERVO_update()) print_PC("AS H\r\n>");
-  
-  // Pointeur lumineux:
-  POINTEUR_update();
 
   // Télémètres:
-  if(ULTRA_update()) {
+  if (ULTRA_update()) {
     int mesure = ULTRA_getMesure();
 
     char string[20];
@@ -99,7 +96,7 @@ void RTOS() {
 }
 
 /**
- * Initialisation de tous les périphériques 
+ * Initialisation de tous les périphériques
  */
 void MASTER_init() {
   // Initialisation du 8051:
@@ -125,12 +122,9 @@ void MASTER_init() {
 
   // Serializer:
   SRLZR_init();
-  
+
   // Servomoteur:
   SERVO_init();
-  
-  // Pointeur lumineux:
-  POINTEUR_init(); //temp
 
   /**
    * Capteurs:
@@ -144,13 +138,28 @@ void MASTER_init() {
 
   // Mesure de courant:
   // COURANT_init();
-
+	
+	
+	/**
+   * Crossbar:
+	 */
+	
+  // UART0.TX: sortie en Push-Pull
+  P0MDOUT |= 1;  // P0.0
+	
+	// UART1.TX: sortie en Push-Pull
+  P0MDOUT |= 1 << 6;  // P0.6
+	
+	// SPI:
+	P0MDOUT |= ((1 << 2) + (1 << 4)); // Push-pull: SCK (P0.2), MOSI (P0.4)
+	P0MDOUT &= ~(1 << 3);  // Input: MISO (P0.3)
+	// + SPI_MISO = 1,  SPI_SEL_SLAVE = 1 dans SPI_MASTER.c
 }
 
 /**
  * Démarrer une épreuve
  * @param {unsigned char} e : numéro de l'épreuve
- * @return {bit} 0: ok, 1: erreur -> une épreuve a déjà commencée, 
+ * @return {bit} 0: ok, 1: erreur -> une épreuve a déjà commencée,
  *                                   ou numéro incorrect
  */
 bit MASTER_startEpreuve(unsigned char e) {
@@ -190,5 +199,4 @@ bit MASTER_endEpreuve() {
 void MASTER_exit() {
   MASTER_isEpreuveInProgress_flag = 0;
   SRLZR_stop();
-  POINTEUR_stop();
 }

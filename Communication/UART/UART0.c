@@ -36,9 +36,6 @@ void UART0_init() {
   // Active RX et TX de UART0 dans le Crossbar:
   XBR0 |= 1 << 2;
 
-  // Sortie en Push-Pull:
-  P0MDOUT |= 1;  // crossbar-pin
-
   // Configuration du Timer 1:
   TIMER1_config();
 
