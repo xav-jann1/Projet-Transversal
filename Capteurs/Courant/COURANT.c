@@ -1,6 +1,6 @@
 
 #include "c8051F020.h"
-#include "courant.h"
+#include "COURANT.h"
 #include "../Ressources/CONFIG_8051.h
 #include <stdio.h>
 
@@ -13,10 +13,10 @@ char message_courant[50];
 int i;
 
 /**
- * Initialisation des registres pour permettre la lecture du courant consommé
+ * Initialisation des registres pour permettre la lecture du courant consommÃ©
  * Actions:
  *  - mise en place de l'ADC
- *  - initialisation des variables : énergie_consommée
+ *  - initialisation des variables : Ã©nergie_consommÃ©e
  */
 void COURANT_init(){
 	
@@ -35,7 +35,7 @@ void COURANT_init(){
 }
 
 /**
- * Mets à zéro les valeurs d'énergie consommée
+ * Mets Ã  zÃ©ro les valeurs d'Ã©nergie consommÃ©e
  */
 void COURANT_reset(){
 	
@@ -44,8 +44,8 @@ void COURANT_reset(){
 }
 
 /**
- * Effectue une mesure instantanée du courant consommé par la base
- * @return {float} : courant_mesuré
+ * Effectue une mesure instantanÃ©e du courant consommÃ© par la base
+ * @return {float} : courant_mesurÃ©
  */
 float COURANT_mesure(){
 	for(i = 0; i < 10; i++){
@@ -74,7 +74,7 @@ float COURANT_mesure(){
 }
 
 /**
- * Met à jour le courant consommé depuis le début de l'épreuve
+ * Met Ã  jour le courant consommÃ© depuis le dÃ©but de l'Ã©preuve
  */
 void COURANT_update(){
 	
@@ -82,8 +82,8 @@ void COURANT_update(){
 }
 
 /**
- * Renvoie l'énergie consommée depuis le début de l'épreuve
- * @param {int} : énergie_consommée
+ * Renvoie l'Ã©nergie consommÃ©e depuis le dÃ©but de l'Ã©preuve
+ * @param {int} : Ã©nergie_consommÃ©e
  */
 float COURANT_getEnergie(){
 	
@@ -91,9 +91,9 @@ float COURANT_getEnergie(){
 }
 
 /**  "MI"
- * Effectue une mesure instantanée du courant consommé par la base
+ * Effectue une mesure instantanÃ©e du courant consommÃ© par la base
  * Et renvoie la valeur obtenue
- * @return {char*} : "KI courant_mesuré"
+ * @return {char*} : "KI courant_mesurÃ©"
  */
 void COURANT_MI(){
 
@@ -101,22 +101,10 @@ void COURANT_MI(){
 }
 
 /**  "ME"
- * Renvoie un message contenant l'énergie consommée depuis le début de l'épreuve
- * @return {char*} : "KE énergie_consommée"
+ * Renvoie un message contenant l'Ã©nergie consommÃ©e depuis le dÃ©but de l'Ã©preuve
+ * @return {char*} : "KE Ã©nergie_consommÃ©e"
  */
 void COURANT_ME(){
 	
 	sprintf(message_courant, "%f KE", COURANT_getEnergie());
 }
-
-
-void main(){
-	
-	COURANT_init();
-	COURANT_mesure();
-	COURANT_ME();
-	
-	while(1);
-}
-	
-
