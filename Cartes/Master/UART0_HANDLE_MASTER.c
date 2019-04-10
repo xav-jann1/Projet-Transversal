@@ -1,8 +1,10 @@
 #include "UART0_HANDLE_MASTER.h"
 
 #include <string.h>
+#include <stdio.h>
 #include "../../Communication/Parseur_messages/PARSEUR.h"
 #include "../../Communication/UART/UART0.h"
+#include "../../Communication/SPI/SPI_MASTER.h"
 
 // Fonctions pour exécuter une commande:
 #include "./HANDLES/HANDLES_MASTER.h"
@@ -42,6 +44,17 @@ void UART0_receive_handle_message(char* message) {
   if (strcmp(response, "ok") == 0) {
     UART0_setColor(GREEN);
     UART0_send("\r\n>");
+  }
+	
+	// Commande à envoyer à la Slave:
+	if (strcmp(response, "slave") == 0) {
+    // Envoie la commande au Slave:
+		char data command[30 + 1];
+		sprintf(command, "%s\r", message);
+		SPI_send(command);
+		
+		UART0_setColor(GREEN);
+		UART0_send("\r\n>");
   }
   
   // Si erreur:

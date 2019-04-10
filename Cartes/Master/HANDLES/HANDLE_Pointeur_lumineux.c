@@ -22,72 +22,17 @@ char* HANDLE_Pointeur_lumineux(Commande* commande) {
 
   // L : Allumage du pointeur lumineux
   if (strcmp("L", cmd) == 0) {
-    int j;
-    int I = 100, D = 99, E = 0, N = 1;
-    for (j = 0; j < nbParams; j++) {
-      // I: Intensité
-      if (params[j] == 'I') {
-        if (valeurs[j] >= 1 && valeurs[j] <= 100)
-          I = valeurs[j];
-        else
-          hasError = 1;
-      }
-
-      // D: Durée allumage
-      else if (params[j] == 'D') {
-        if (valeurs[j] >= 1 && valeurs[j] <= 99)
-          D = valeurs[j];
-        else
-          hasError = 1;
-      }
-
-      // E: Durée extinction
-      else if (params[j] == 'E') {
-        if (valeurs[j] >= 0 && valeurs[j] <= 99)
-          E = valeurs[j];
-        else
-          hasError = 1;
-      }
-
-      // N: Nombre d'allumage
-      else if (params[j] == 'N') {
-        if (valeurs[j] >= 1 && valeurs[j] <= 99)
-          N = valeurs[j];
-        else
-          hasError = 1;
-      }
-    }
-    
-    // Démarre la séquence d'allumage:
-    POINTEUR_allumage(I, D, E, N);
+    strcpy(response, "slave");
   }
 
   // LS : Fin de l’allumage du pointeur lumineux
   else if (strcmp("LS", cmd) == 0) {
-    if(nbParams == 0) hasError = POINTEUR_stop();
-    else hasError = 1;
+    strcpy(response, "slave");
   }
 
   // LE : Séquence d'allumage prédéfinie
   else if (strcmp("LE", cmd) == 0) {
-    if (nbParams == 1 && params[0] == '#') {
-      if (valeurs[0] == 3)
-        hasError = POINTEUR_allumage(100, 99, 0, 1);
-      else if (valeurs[0] == 4)
-        hasError = POINTEUR_allumage(100, 10, 10, 2);
-      else if (valeurs[0] == 5)  // 5 = 7
-        hasError = POINTEUR_allumage(100, 5, 5, 8);
-      else if (valeurs[0] == 6)
-        hasError = POINTEUR_allumage(10, 1, 10, 4);
-      else if (valeurs[0] == 7)  // 7 = 5
-        hasError = POINTEUR_allumage(100, 5, 5, 8);
-      else if (valeurs[0] == 9)
-        hasError = POINTEUR_allumage(10, 1, 10, 50);
-      else if (valeurs[0] == 10)
-        hasError = POINTEUR_allumage(10, 1, 10, 4);
-      else hasError = 1;
-    }
-    else hasError = 1;
+    strcpy(response, "slave");
   }
 
   // CS : Pilotage de servomoteur
@@ -123,6 +68,9 @@ char* HANDLE_Pointeur_lumineux(Commande* commande) {
         SERVO_pos(angle);
       else
         SERVO_pos(-90);
+
+      // Si servomoteur Vertical:
+      if (O == 'V') strcpy(response, "slave");
     }
   }
 
@@ -133,7 +81,7 @@ char* HANDLE_Pointeur_lumineux(Commande* commande) {
   // Réponse :
   if (hasError)
     strcpy(response, "error");
-  else if (isCommand)
+  else if (isCommand && strcmp(response, "rien") == 0)
     strcpy(response, "ok");
 
   return response;
