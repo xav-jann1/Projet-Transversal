@@ -1,18 +1,19 @@
 #ifdef SLAVE
+
+#ifdef SLAVE
 #include "../../Cartes/Slave/SPI_HANDLE_SLAVE.h"
 #else
 void SPI_receive_handle_message(char* message);
 #endif
 
-#include "SPI_SLAVE.h"
 #include "../../Cartes/Ressources/CONFIG_8051.h"
 #include "../../Cartes/Ressources/c8051F020.h"
+#include "SPI_SLAVE.h"
 
 /** Variables globales */
 sbit LED = P1 ^ 6;
-sbit P0_2 = P0 ^ 2;
-sbit P0_3 = P0 ^ 3;
-char SPI0_receive_buffer[100];
+sbit SPI_MOSI = P0 ^ 4;
+char SPI0_receive_buffer[50] = "";
 char SPI0_receive_i;
 char SPI0_receive_handle;
 
@@ -21,11 +22,6 @@ char SPI0_receive_handle;
  * Registres modifiés: P0MDOUT
  */
 void SPI_init() {
-  P0MDOUT |= 1 << 1;  // Output : P0.1 et P0.4
-  P0MDOUT &= ~(1 << 2 + 1 << 3);  // Input : P0.2 et P0.3
-  P0_2 = 1;
-  P0_3 = 1;
-
   // Config SPI:
   SPI0CFG = 0x07;
 
@@ -33,7 +29,10 @@ void SPI_init() {
   SPI0_receive_i = 0;
 
   // Active les broches pour la crossbar:
-  XBR0 |= 0x02;
+  XBR0 |= 1 << 1;
+
+  // Initialisation pin:
+  SPI_MOSI = 1;
 
   // Clock rate:
   SPI0CKR = 0xFF;
@@ -71,7 +70,6 @@ void SPI_sendChar(char c) {}
  * Fonction d'interruption de la SPI
  */
 void SPI_interrupt() interrupt 6 {
-
   // Réception:
   if (SPIF == 1) {
     // Récupère le caractère reçu:
@@ -105,13 +103,15 @@ void SPI_interrupt() interrupt 6 {
  * Fonction déclenchée par défaut lorsqu'une ligne est reçu sur la SPI
  * @param {char*} buffer : ligne reçu par la SPI
  */
-void UART0_receive_handle_message(char* buffer) {
-  //SPI_send("\r\n");
+void SPI_receive_handle_message(char* buffer) {
+  // SPI_send("\r\n");
 
   // Renvoie la ligne reçue:
-  //SPI_send(buffer);
-  //SPI_send("\r\n");
+  // SPI_send(buffer);
+  // SPI_send("\r\n");
 
-  //SPI_resetColor();
+  // SPI_resetColor();
 }
+#endif
+
 #endif

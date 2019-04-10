@@ -4,11 +4,11 @@
 #include "c8051F020.h"
 
 // Global variables
-sbit P0_1 = P0 ^ 1;
-sbit P0_4 = P0 ^ 4;
-sbit LED = P1 ^ 6;
+sbit SPI_MISO = P0 ^ 3;
+sbit SPI_SEL_SLAVE = P1 ^ 4;
+
 char SPI0_receive_handle;
-char SPI0_receive_buffer[100];
+char SPI0_receive_buffer[30];
 int i;
 char SPI_transmit_flag;
 
@@ -26,10 +26,10 @@ void SPI_init() {
   // Active les broches pour le Crossbar:
   XBR0 |= 0x02;
 
-  P0MDOUT &= 0xFD;  // P0.1 et P0.4 en input
-  P0MDOUT |= 0x15;  // P0.2 et P0.3 en output
-  P0_1 = 1;
-  P0_4 = 1;
+  // Initialisation pins:
+  P1MDOUT |= 1 << 3;  // Push-pull: SEL_SLAVE
+  SPI_SEL_SLAVE = 1;
+  SPI_MISO = 1;
 
   // Clock rate:
   SPI0CKR = 0xFF;
@@ -72,7 +72,7 @@ void SPI_sendChar(char c) {
   while (SPI_transmit_flag == 0)
     ;
   SPI_transmit_flag = 0;
-  P0_4 = 0;
+  SPI_SEL_SLAVE = 0;
   SPI0DAT = c;
 }
 
@@ -89,7 +89,7 @@ void SPI_interrupt() interrupt 6 {
   if (SPIF == 1) {
     SPI_transmit_flag = 1;
     SPIF = 0;
-    P0_4 = 1;
+    SPI_SEL_SLAVE = 1;
   }
 }
 #endif

@@ -34,20 +34,20 @@ void SPI_receive_handle_message(char* message) {
 
   // Commande correctement exécutée:
   if (strcmp(response, "ok") == 0) {
-    //SPI_setColor(GREEN);
+    // SPI_setColor(GREEN);
     SPI_send("\r\n>");
   }
-  
+
   // Si erreur:
   else if (strcmp(response, "error") == 0) {
-    //SPI_setColor(RED);
+    // SPI_setColor(RED);
     SPI_send("\r\n#");
   }
 
   // S'il y a une réponse:
   else if (strcmp(response, "rien") != 0) {
     // Renvoie la réponse:
-    //SPI_setColor(GREEN);
+    // SPI_setColor(GREEN);
     SPI_send("\r\n> ");
     SPI_send(response);
     SPI_send("\r\n>");
@@ -56,9 +56,9 @@ void SPI_receive_handle_message(char* message) {
   // Sinon, si aucune commande reconnue:
   else {
     // Message d'erreur:
-    //SPI_setColor(RED);
+    // SPI_setColor(RED);
     SPI_send("\r\n#");
   }
-  
-  //SPI_resetColor();
+
+  // SPI_resetColor();
 }
