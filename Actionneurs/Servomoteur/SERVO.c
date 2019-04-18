@@ -79,6 +79,25 @@ bit SERVO_update() {
 }
 
 /**
+ * Active le Servomoteur
+ */
+void SERVO_on() {
+  // Active l'interruption du Timer 3:
+  EIE2 |= 1;  // Enable: ET3 = 1
+}
+
+/**
+ * Désactive le Servomoteur
+ */
+void SERVO_off() {
+  // Désactive l'interruption du Timer 3:
+  EIE2 &= ~1;  // Disable: ET3 = 0
+
+  // Sortie à l'état bas:
+  SERVO_pin = 0;
+}
+
+/**
  * Fonction d'interruption du Timer 3
  * Etat haut 1 fois sur 10 déclenchements
  * Registre modifié: TMR3CN (TF3)

@@ -21,6 +21,16 @@ void TIMER3_config();
 bit SERVO_update();
 
 /**
+ * Active le Servomoteur
+ */
+void SERVO_on();
+
+/**
+ * Désactive le Servomoteur
+ */
+void SERVO_off();
+
+/**
  * Fonction d'interruption du Timer 3
  * Etat haut 1 fois sur 10 déclenchements
  * Registre modifié: TMR3CN (TF3)
