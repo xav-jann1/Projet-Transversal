@@ -29,19 +29,19 @@ void COURANT_update();
  * Renvoie l'énergie consommée depuis le début de l'épreuve
  * @param {int} : énergie_consommée
  */
-float COURANT_getEnergie();
+int COURANT_getEnergie();
 
 /**  "MI"
  * Effectue une mesure instantanée du courant consommé par la base
  * Et renvoie la valeur obtenue
  * @return {char*} : "KI courant_mesuré"
  */
-void COURANT_MI();
+int COURANT_MI();
 
 /**  "ME"
  * Renvoie un message contenant l'énergie consommée depuis le début de l'épreuve
  * @return {char*} : "KE énergie_consommée"
  */
-void COURANT_ME();
+int COURANT_ME();
 
 #endif  // COURANT_H
