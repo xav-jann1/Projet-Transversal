@@ -1,5 +1,7 @@
 #ifdef MASTER
 #include "../../Cartes/Master/UART0_HANDLE_MASTER.h"
+#elif SLAVE
+#include "../../Cartes/Slave/UART0_HANDLE_SLAVE.h"
 #else
 void UART0_receive_handle_message(char* buffer);
 #endif
@@ -46,9 +48,11 @@ void UART0_init() {
 
   // Activation de la réception:
   REN0 = 1;
-
+  
+  #ifdef MASTER
   UART0_resetColor();
   UART0_setColor(GREEN);
+  #endif
 }
 
 /**
@@ -114,7 +118,7 @@ void UART0_sendChar(char c) {
  * @param {char*} string : chaîne de caractères à envoyer
  */
 void UART0_send(char* string) {
-  int i = 0;
+  unsigned char i = 0;
   while (string[i] != '\0') {
     UART0_sendChar(string[i]);
     i++;
@@ -177,7 +181,8 @@ void UART0_interrupt() interrupt 4 {
       // Ajoute le caractère au buffer:
       UART0_receive_buffer[UART0_receive_i] = c;
       UART0_receive_i++;
-
+          
+      #ifdef MASTER
       // Gestion de la couleur:
       if (c == ' ') {
         UART0_color = CYAN;  // Param
@@ -189,9 +194,11 @@ void UART0_interrupt() interrupt 4 {
         UART0_color = YELLOW;  // Valeur
         UART0_update_color = 1;
       }
-
+      #endif
+      
       // UART0_sendChar(c);
       UART0_receive_char = c;
+      
     }
 
     // Si fin de la ligne ou trop de caractères:
@@ -210,6 +217,7 @@ void UART0_interrupt() interrupt 4 {
 }
 
 #ifndef MASTER
+#ifndef SLAVE
 /**
  * Fonction déclenchée par défaut lorsqu'une ligne est reçu sur l'UART0
  * @param {char*} buffer : ligne reçu par l'UART0
@@ -223,6 +231,7 @@ void UART0_receive_handle_message(char* buffer) {
 
   UART0_resetColor();
 }
+#endif
 #endif
 
 /**

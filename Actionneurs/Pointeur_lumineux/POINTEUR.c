@@ -42,7 +42,7 @@ void POINTEUR_init() {
   XBR0 |= 1 << 3;
 
   // Sortie en Push-Pull:
-  P0MDOUT |= 1 << 4; // crossbar-pin
+  P0MDOUT |= 1 << 6; // crossbar-pin
 
   // Par défaut, désactive le pointeur:
   POINTEUR_off();

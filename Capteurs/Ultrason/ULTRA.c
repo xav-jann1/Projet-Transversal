@@ -115,7 +115,7 @@ int ULTRA_getMesure() { return ULTRA_mesure_cm; }
  */
 void ULTRA_delay_10us() {
   int i;
-  for (i = 0; i < 5; i++)
+  for (i = 0; i < 18; i++)
     ;
 }
 

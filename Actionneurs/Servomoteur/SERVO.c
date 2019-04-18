@@ -8,11 +8,7 @@
  */
 
 // Pin du Servomoteur:
-#ifdef MASTER
 sbit SERVO_pin = P1 ^ 3;
-#else // SLAVE
-sbit SERVO_pin = P1 ^ 4;
-#endif
 
 // Paramètres de la position du Servomoteur:
 unsigned int SERVO_t_pos_min = 700;   // Durée de l'impulsion pour 0°

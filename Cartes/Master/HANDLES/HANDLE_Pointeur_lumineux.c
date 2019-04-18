@@ -22,12 +22,50 @@ char* HANDLE_Pointeur_lumineux(Commande* commande) {
 
   // L : Allumage du pointeur lumineux
   if (strcmp("L", cmd) == 0) {
-    strcpy(response, "slave");
+    int j;
+    int I = 100, D = 99, E = 0, N = 1;
+    for (j = 0; j < nbParams; j++) {
+      // I: Intensité
+      if (params[j] == 'I') {
+        if (valeurs[j] >= 1 && valeurs[j] <= 100)
+          I = valeurs[j];
+        else
+          hasError = 1;
+      }
+
+      // D: Durée allumage
+      else if (params[j] == 'D') {
+        if (valeurs[j] >= 1 && valeurs[j] <= 99)
+          D = valeurs[j];
+        else
+          hasError = 1;
+      }
+
+      // E: Durée extinction
+      else if (params[j] == 'E') {
+        if (valeurs[j] >= 0 && valeurs[j] <= 99)
+          E = valeurs[j];
+        else
+          hasError = 1;
+      }
+
+      // N: Nombre d'allumage
+      else if (params[j] == 'N') {
+        if (valeurs[j] >= 1 && valeurs[j] <= 99)
+          N = valeurs[j];
+        else
+          hasError = 1;
+      }
+    }
+    
+    // Si pas d'erreur, envoie la commande à la carte Slave:
+    if (!hasError) strcpy(response, "slave");
   }
 
   // LS : Fin de l’allumage du pointeur lumineux
   else if (strcmp("LS", cmd) == 0) {
-    strcpy(response, "slave");
+     if (nbParams == 0) strcpy(response, "slave");
+     else hasError = 1;
   }
 
   // LE : Séquence d'allumage prédéfinie
