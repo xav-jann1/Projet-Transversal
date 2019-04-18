@@ -10,8 +10,14 @@
 // Indique si 1 ms s'est réalisée:
 bit TIME_flag = 0;
 
+// Indique si 100 ms s'est réalisée:
+bit TIME_flag_100 = 0;
+
 // Compteur de ms:
 unsigned int TIME_counter = 0;
+
+// Compteur pour 100 ms:
+unsigned char TIME_counter_100ms = 0;
 
 // Buffeur du compteur de ms, pour correctement exécuter le test d'une condition
 unsigned int TIME_counter_buffer;
@@ -59,6 +65,12 @@ void TIME_interrupt() interrupt 5 {
   TIME_counter++;
   TIME_flag = 1;
 
+  // Compte pour 100ms
+  TIME_counter_100ms++;
+  if (TIME_counter_100ms >= 100) {
+    TIME_flag_100 = 1;
+    TIME_counter_100ms = 0;
+  }
   // RAZ du flag:
   TF2 = 0;
 }
@@ -89,10 +101,19 @@ bit TIME_flag_ms() { return TIME_flag; }
  */
 void TIME_clear_ms_flag() { TIME_flag = 0; }
 
-
+/**
+ * Renvoie si 100 ms vient de passer
+ * @return {bit} 0: non, 1: oui
+ */
+bit TIME_flag_100ms() { return TIME_flag_100; }
 
 /**
- * Archives: 
+ * Initialise le flag indiquant les 100 ms
+ */
+void TIME_clear_100ms_flag() { TIME_flag_100 = 0; }
+
+/**
+ * Archives:
  */
 
 /**

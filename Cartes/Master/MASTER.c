@@ -36,6 +36,8 @@ void main(void) {
   // Initialisation de la carte et des périphériques:
   MASTER_init();
 
+  SPI_send("TEST3");  // temp
+
   // Messages de démarrage:
   print_PC("\n\rMASTER init completed\n\r");
   TIME_wait(2000);
@@ -62,6 +64,14 @@ void main(void) {
       // Mise à jour des périphériques:
       RTOS();
     }
+
+    // Toutes les 100 ms:
+    if (TIME_flag_100ms()) {
+      TIME_clear_100ms_flag();
+
+      // Mise à jour des périphériques:
+      RTOS_100ms();
+    }
   }
 }
 
@@ -75,9 +85,6 @@ void print_PC(char* string) { UART0_send(string); }
  * Fonction à exécuter toutes les ms pour mettre à jour tous les périphériques
  */
 void RTOS() {
-  // Mesure de courant:
-  // COURANT_update();
-
   // Base:
   BASE_update();
 
@@ -93,6 +100,15 @@ void RTOS() {
     sprintf(string, "KOB XX:%d\r\n>", mesure);
     UART0_send(string);
   }
+}
+
+/**
+ * Fonction à exécuter toutes les 100 ms pour mettre à jour tous les
+ * périphériques
+ */
+void RTOS_100ms() {
+  // Mesure de courant:
+  COURANT_update();
 }
 
 /**
@@ -137,23 +153,22 @@ void MASTER_init() {
   ULTRA_init();
 
   // Mesure de courant:
-  // COURANT_init();
-	
-	
-	/**
+  COURANT_init();
+
+  /**
    * Crossbar:
-	 */
-	
+   */
+
   // UART0.TX: sortie en Push-Pull
   P0MDOUT |= 1;  // P0.0
-	
-	// UART1.TX: sortie en Push-Pull
+
+  // UART1.TX: sortie en Push-Pull
   P0MDOUT |= 1 << 6;  // P0.6
-	
-	// SPI:
-	P0MDOUT |= ((1 << 2) + (1 << 4)); // Push-pull: SCK (P0.2), MOSI (P0.4)
-	P0MDOUT &= ~(1 << 3);  // Input: MISO (P0.3)
-	// + SPI_MISO = 1,  SPI_SEL_SLAVE = 1 dans SPI_MASTER.c
+
+  // SPI:
+  P0MDOUT |= ((1 << 2) + (1 << 4));  // Push-pull: SCK (P0.2), MOSI (P0.4)
+  P0MDOUT &= ~(1 << 3);              // Input: MISO (P0.3)
+  // + SPI_MISO = 1,  SPI_SEL_SLAVE = 1 dans SPI_MASTER.c
 }
 
 /**

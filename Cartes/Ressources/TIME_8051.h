@@ -30,4 +30,15 @@ bit TIME_flag_ms();
  */
 void TIME_clear_ms_flag();
 
+/**
+ * Renvoie si 100 ms vient de passer
+ * @return {bit} 0: non, 1: oui
+ */
+bit TIME_flag_100ms();
+
+/**
+ * Initialise le flag indiquant les 100 ms
+ */
+void TIME_clear_100ms_flag();
+
 #endif  // TIME_8051_H

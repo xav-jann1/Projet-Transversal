@@ -13,6 +13,11 @@ void print_PC(char* string);
 void RTOS();
 
 /**
+ * Fonction à exécuter toutes les 100 ms pour mettre à jour tous les périphériques
+ */
+void RTOS_100ms();
+
+/**
  * Initialisation du microcontrôlleur et de tous les périphériques
  */
 void MASTER_init();
