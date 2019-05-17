@@ -23,9 +23,15 @@ void UART0_receive_handle_message(char* message) {
 
   // Réponse:
   char data response[30] = "rien";
+  
+  // Commande:
+  Commande data commande;
+	
+  // Copie le message (car il est modifié dans PARSEUR):
+  char idata message_copy[30];
+  strcpy(message_copy, message);
 
   // Extrait la commande du message:
-  Commande data commande;
   commande = PARSEUR_message(message);
 
   // Si épreuve en cours:
@@ -45,16 +51,16 @@ void UART0_receive_handle_message(char* message) {
     UART0_setColor(GREEN);
     UART0_send("\r\n>");
   }
-	
-	// Commande à envoyer à la Slave:
-	if (strcmp(response, "slave") == 0) {
+  
+  // Commande à envoyer à la Slave:
+  else if (strcmp(response, "slave") == 0) {
     // Envoie la commande au Slave:
-		char data command[30 + 1];
-		sprintf(command, "%s\r", message);
-		SPI_send(command);
-		
-		UART0_setColor(GREEN);
-		UART0_send("\r\n>");
+    char data command[30 + 1];
+    sprintf(command, "%s\r", message_copy);
+    SPI_send(command);
+    
+    UART0_setColor(GREEN);
+    UART0_send("\r\n>");
   }
   
   // Si erreur:

@@ -26,6 +26,7 @@ int SERVO_i = 0;
 
 // Temps en ms, avant que le servo soit correctement positionné:
 unsigned int SERVO_wait_pos = 0;
+char SERVO_response = 'H';
 
 /**
  * Initialisation pour utiliser un servomoteur
@@ -68,12 +69,12 @@ void TIMER3_config() {
 /**
  * Fonction qui doit s'exécuter toutes les ms,
  * pour prévenir lorsque le servo s'est bien positionné
- * @return {bit} 0: rien, 1: servo positionné
+ * @return {bit} 0: rien, 'H' ou 'V': servo positionné
  */
-bit SERVO_update() {
+char SERVO_update() {
   if (SERVO_wait_pos > 0) {
     SERVO_wait_pos--;
-    if (SERVO_wait_pos == 0) return 1;
+    if (SERVO_wait_pos == 0) return SERVO_response;
   }
   return 0;
 }
@@ -126,7 +127,7 @@ void SERVO_interrupt() interrupt 14 {
  */
 void SERVO_pos(char p) {
   // Adaptation de l'angle:
-  unsigned char pos = p + 90;  // [0°,180°]
+  unsigned char pos = 180 - (p + 90);  // [0°,180°]
 
   // Vérification de l'angle:
   if (pos > 180) pos = 180;
@@ -145,9 +146,14 @@ void SERVO_pos(char p) {
   TMR3RLL = timer_load & 0x00FF;
   TMR3RLH = timer_load >> 8;
 
-  // Envoie un message dans $n ms, indiquant que le servo s'est bien positionné:
-  SERVO_wait_pos = 1000;  // $n ms
-
   // Enregistre la nouvelle position du servo:
   SERVO_position = pos;
+}
+
+void SERVO_showResponse(char c) {
+	// Enregistre le servo correctement placé:
+	SERVO_response = c;
+	
+	// Envoie un message dans $n ms, indiquant que le servo s'est bien positionné:
+  SERVO_wait_pos = 800;  // $n ms
 }

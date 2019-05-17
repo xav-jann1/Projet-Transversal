@@ -87,7 +87,7 @@ void TIME_interrupt() interrupt 5 {
 void TIME_wait(unsigned int ms) {
   TIME_counter = 0;
   TIME_counter_buffer = 0;
-  while (TIME_counter_buffer < ms) TIME_counter_buffer = TIME_counter;
+   while (TIME_counter_buffer < ms) TIME_counter_buffer = TIME_counter;
 }
 
 /**

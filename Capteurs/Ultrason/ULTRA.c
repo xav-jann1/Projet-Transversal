@@ -4,7 +4,7 @@
 #define SYSCLK 22118400
 
 /**
-* Organisation des pins :
+ * Organisation des pins :
  *   Capteur avant:
  *     - Trig : P3.3
  *     - Echo : P3.6

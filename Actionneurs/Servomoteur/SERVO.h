@@ -16,9 +16,9 @@ void TIMER3_config();
 /**
  * Fonction qui doit s'exécuter toutes les ms,
  * pour prévenir lorsque le servo s'est bien positionné
- * @return {bit} 0: rien, 1: servo positionné
+ * @return {char} 0: rien, 'H' ou 'V': servo positionné
  */
-bit SERVO_update();
+char SERVO_update();
 
 /**
  * Active le Servomoteur
@@ -43,5 +43,11 @@ void SERVO_interrupt();
  * Registres modifiés: TMR3RLL, TMR3RLH
  */
 void SERVO_pos(char pos);
+
+/**
+ * 
+ * @param {char} c
+ */
+void SERVO_showResponse(char c);
 
 #endif  // SERVO_H

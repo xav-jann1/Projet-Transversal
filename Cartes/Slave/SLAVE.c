@@ -16,7 +16,7 @@
 #include "../../Actionneurs/Servomoteur/SERVO.h"
 
 // Capteurs:
-//#include "../../Capteurs/Camera/CAMERA.h"
+#include "../../Capteurs/Photo/PHOTO.h"
 
 /**
  * Fonction principale
@@ -26,17 +26,19 @@ void main(void) {
   SLAVE_init();
 
   // Messages de démarrage:
-  print_MASTER("\n\rSLAVE init completed\n\r");
-  TIME_wait(2000);
-  print_MASTER("Waiting for instructions...\n\r");
-  TIME_wait(1000);
-  print_MASTER(">");
+  //print_MASTER("\n\rSLAVE init completed\n\r");
+  //TIME_wait(2000);
+  //print_MASTER("Waiting for instructions...\n\r");
+  //TIME_wait(1000);
+  //print_MASTER(">");
   //UART0_resetColor();
+	
+  UART0_send("SD F:6 P:25 W:50 B:3\r");
 
   // Boucle principale:
   while (1) {
     SPI_update();
-    //UART0_update();
+    UART0_update();
 
     // Toutes les ms:
     if (TIME_flag_ms()) {
@@ -44,6 +46,14 @@ void main(void) {
 
       // Mise à jour des périphériques:
       RTOS();
+    }
+		
+		// Toutes les 100 ms:
+    if (TIME_flag_100ms()) {
+      TIME_clear_100ms_flag();
+
+      // Mise à jour des périphériques:
+      RTOS_100ms();
     }
   }
 }
@@ -60,10 +70,20 @@ void print_MASTER(char* string) { UART0_send(string); } //SPI_send(string); }
 void RTOS() {
   // Servomoteur:
   //   Si le servo s'est bien positionné:
-  if (SERVO_update()) print_MASTER("AS V\r\n>");
+	//char servo = SERVO_update();
+  //if (servo) print_MASTER("AS V\r\n>");
 
   // Pointeur lumineux:
   POINTEUR_update();
+}
+
+/**
+ * Fonction à exécuter toutes les 100 ms pour mettre à jour tous les
+ * périphériques
+ */
+void RTOS_100ms() {
+  // Prise de vue::
+  PHOTO_update();
 }
 
 /**
@@ -99,19 +119,22 @@ void SLAVE_init() {
    */
 
   // Prise de vue:
-  // CAMERA_init();
-	
-		/**
+  PHOTO_init();
+  
+  /**
    * Crossbar:
-	 */
-	
+   */
+  
   // UART0.TX: sortie en Push-Pull
   P0MDOUT |= 1;  // P0.0
-	
-	// SPI:
-	P0MDOUT |= (1 << 3);   // Push-pull : MISO(P0.3)
-  P0MDOUT &= ~((1 << 4) + (1 << 6));  // Input : MOSI(P0.4),  NSS(P0.6)
-	// + SPI_MOSI = 1 dans SPI_SLAVE.c
+  
+  // SPI:
+  P0MDOUT |= (1 << 3);   // Push-pull : MISO(P0.3)
+  P0MDOUT &= ~((1 << 4) + (1 << 5));  // Input : MOSI(P0.4),  NSS(P0.5)
+  // + SPI_MOSI = 1 dans SPI_SLAVE.c
+
+  // Pointeur lumineux: sortie en Push-Pull
+  P0MDOUT |= 1 << 6;  // CEX0(P0.?) 
 }
 
 /**

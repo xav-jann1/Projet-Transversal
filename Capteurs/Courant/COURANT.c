@@ -46,7 +46,7 @@ void COURANT_init() {
   // AMX0CF = 0x1;  // AIN0, AIN1: entrées différentielles
 
   AMX0SL = 0x0;  // temp: AIN0 par défaut
-                 // AMX0SL = 0x1;  // +AIN0 -AIN1
+  // AMX0SL = 0x1;  // +AIN0 -AIN1
 
   // Registre AD0CN:
   AD0CM0 = 0;  // Conversion pour AD0BUSY = 1
@@ -59,7 +59,7 @@ void COURANT_init() {
 }
 
 /**
- * Mets à zéro les valeurs d'énergie consommée
+ * Mets à zéro l'énergie consommée
  */
 void COURANT_reset() { COURANT_energie = 0; }
 
@@ -89,15 +89,19 @@ float COURANT_mesure() {
     tension_moyenne += ADC0 * 2.43f / 4095.0f;
   }
 
-  // Moyenne sur 10 valeurs:
-  tension_moyenne /= 10.0f;
+  // Moyenne sur 5 valeurs:
+  tension_moyenne /= 5.0f;
+	
+	// Correction par l'amplification du montage en entrée:
+	tension_moyenne = (tension_moyenne / 52.0f) * 3.5f;
 
-  // Retourne le courant en mA:
+  // Retourne le courant en A:
   return tension_moyenne / R_shunt;
 }
 
 /**
  * Met à jour le courant consommé depuis le début de l'épreuve
+ * Fonction à exécuter toutes les <dt> secondes
  */
 void COURANT_update() { COURANT_energie += COURANT_mesure() * dt; }
 
@@ -112,7 +116,7 @@ int COURANT_getEnergie() { return (int)COURANT_energie; }
  * et renvoie la valeur obtenue en mA
  * @return {int} : courant_mesuré (mA)
  */
-int COURANT_MI() { return (int)1000.0f * COURANT_mesure(); }
+int COURANT_MI() { return (int)(1000.0f * COURANT_mesure()); }
 
 /**  "ME"
  * Renvoie l'énergie consommée depuis le début de l'épreuve

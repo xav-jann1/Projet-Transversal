@@ -1,6 +1,6 @@
 #ifdef MASTER
 #include "../../Cartes/Master/UART0_HANDLE_MASTER.h"
-#elif SLAVE
+#elseif SLAVE
 #include "../../Cartes/Slave/UART0_HANDLE_SLAVE.h"
 #else
 void UART0_receive_handle_message(char* buffer);
@@ -121,6 +121,9 @@ void UART0_send(char* string) {
   unsigned char i = 0;
   while (string[i] != '\0') {
     UART0_sendChar(string[i]);
+		#ifdef SLAVE
+		TIME_wait(10);
+		#endif
     i++;
   }
 }
