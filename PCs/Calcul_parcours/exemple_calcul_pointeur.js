@@ -1,4 +1,4 @@
-const calcul_pointeur = require('./calcul_pointeur.js');
+﻿const calcul_pointeur = require('./calcul_pointeur.js');
 
 // Position de la cible par rapport à la base:
 let Xc, Yc, Zc = 100;  // cm

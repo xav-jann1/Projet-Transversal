@@ -11,14 +11,14 @@ const pointeurHeight = 30;  // cm
 exports.computeServoPositions = (Xc, Yc, Zc) => {
 
   // Angle du vecteur entre la base et la cible (Xc, Yc):
-  let angleH = -Math.atan2(Yc, Xc) * 180 / Math.PI;
+  let angleH = -Math.atan2(Xc, Yc) * 180 / Math.PI;
 
   //console.log(`x: ${Xc}, y: ${Yc} => angleH: ${angleH}`);
 
   // Vecteur vertical (longueur, z) :
   let z = Zc - pointeurHeight;
   let longueur = Math.sqrt(Math.pow(Xc, 2) + Math.pow(Yc, 2));
-  let angleV = -Math.atan2(z, longueur) * 180 / Math.PI;
+  let angleV = -Math.atan2(longueur, z) * 180 / Math.PI;
 
   //console.log(`z: ${z}, longueur: ${longueur}, angleV: ${angleV}`);
 

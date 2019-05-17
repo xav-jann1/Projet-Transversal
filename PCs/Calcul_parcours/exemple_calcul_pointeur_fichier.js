@@ -13,7 +13,7 @@ let Xc = file.Xc, Yc = file.Yc, Zc = file.Zc;
 
 // Calcul les positions des servomoteurs:
 let pos = calcul_pointeur.computeServoPositions(Xc, Yc, Zc);
-console.log(`pos.H = ${pos.H} vs 33;\t pos.V = ${pos.V} vs 25`);
+console.log(`pos.H = ${pos.H} vs 57;\t pos.V = ${pos.V} vs 51`);
 
 // Enregistre le résultat dans un fichier:
 let result_name = 'exemple_result.json';
