@@ -49,8 +49,8 @@ void main(void) {
   UART0_resetColor();
 
   // Test UART1:
-  UART1_send("pids\r");
-
+  //UART1_send("pids\r");
+	
   // Boucle principale:
   while (1) {
     UART0_update();
@@ -85,13 +85,20 @@ void print_PC(char* string) { UART0_send(string); }
  * Fonction à exécuter toutes les ms pour mettre à jour tous les périphériques
  */
 void RTOS() {
+	char servo = 0;
   // Base:
-  BASE_update();
+  if(BASE_update()) {
+		print_PC("B\r\n>");
+	}
 
   // Servomoteur:
   //   Si le servo s'est bien positionné:
-  if (SERVO_update()) print_PC("AS H\r\n>");
-
+	servo = SERVO_update();
+  if (servo) {
+		char response[10];
+		sprintf(response, "AS %c\r\n>", servo);
+		print_PC(response);
+	}
   // Télémètres:
   if (ULTRA_update()) {
     int mesure = ULTRA_getMesure();

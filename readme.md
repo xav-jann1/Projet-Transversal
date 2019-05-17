@@ -32,10 +32,10 @@ Rassemblement de tous les programmes développés pour respecter le cahier des c
 - [Servomoteur](./Actionneurs/Servomoteur) : contrôle de l'orientation d'un servomoteur
 
 ## Capteurs
-- [Caméra](./Capteurs/Camera) : utilisation de la caméra pour les prises de vue
 - [Courant](./Capteurs/Courant) : mesure du courant par une résistance de Shunt
 - [Infrarouge](./Capteurs/Infrarouge) : mesure d'une distance par télémètre infrarouge
 - [Microphone](./Capteurs/Microphone) : acquisition d'un signal sonore
+- [Photo](./Capteurs/Photo) : utilisation de la caméra pour les prises de vue
 - [Ultrason](./Capteurs/Ultrason) : mesure d'une distance par un télémètre ultrason
 
 
