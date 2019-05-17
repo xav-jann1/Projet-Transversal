@@ -3,14 +3,22 @@
 #include "SPI_MASTER.h"
 #include "c8051F020.h"
 
-// Global variables
+#include "../../Cartes/Ressources/TIME_8051.h" // temp
+
+/**
+ * Variables de la SPI:
+ */
+
+// Pins:
 sbit SPI_MISO = P0 ^ 3;
 sbit SPI_SEL_SLAVE = P1 ^ 4;
 
-char SPI0_receive_handle;
-char SPI0_receive_buffer[30];
-int i;
-char SPI_transmit_flag;
+// Transmission:
+bit SPI_transmit_flag;
+
+// Réception:
+char SPI_receive_handle;
+char SPI_receive_buffer[30];
 
 /**
  * Initialisation de la SPI
@@ -28,7 +36,7 @@ void SPI_init() {
 
   // Initialisation pins:
   P1MDOUT |= 1 << 3;  // Push-pull: SEL_SLAVE
-  SPI_SEL_SLAVE = 1;
+  SPI_SEL_SLAVE = 0;
   SPI_MISO = 1;
 
   // Clock rate:
@@ -45,9 +53,9 @@ void SPI_init() {
  * Fonction de mise à jour de la SPI
  */
 void SPI_update() {
-  if (SPI0_receive_handle == 1) {
-    SPI_receive_handle_buffer(SPI0_receive_buffer);
-    SPI0_receive_handle = 0;
+  if (SPI_receive_handle == 1) {
+    SPI_receive_handle_buffer(SPI_receive_buffer);
+    SPI_receive_handle = 0;
   }
 }
 
@@ -56,12 +64,16 @@ void SPI_update() {
  * @param {char*} string : chaîne de caractères à envoyer
  */
 void SPI_send(char* string) {
-  i = 0;
+  unsigned char i = 0;
   while (string[i] != '\0') {
     SPI_sendChar(string[i]);
+    TIME_wait(10); // temp
     i++;
   }
-  SPI_sendChar('\0');
+  
+  //TIME_wait(200); // temp
+  
+  //SPI_sendChar('\0');
 }
 
 /**

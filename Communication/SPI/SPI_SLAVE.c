@@ -11,22 +11,23 @@ void SPI_receive_handle_message(char* message);
 #include "SPI_SLAVE.h"
 
 /** Variables globales */
-sbit LED = P1 ^ 6;
 sbit SPI_MOSI = P0 ^ 4;
-char SPI0_receive_buffer[50] = "";
-char SPI0_receive_i;
-char SPI0_receive_handle;
+char SPI_receive_buffer[50] = "";
+char SPI_receive_i;
+bit SPI_receive_handle;
+
+int SPI_i = 0; // temp
 
 /**
  * Initialisation de la SPI
  * Registres modifiés: P0MDOUT
  */
 void SPI_init() {
-  // Config SPI:
+  // Config SPI en mode Slave:
   SPI0CFG = 0x07;
 
   // Compteur du charactère:
-  SPI0_receive_i = 0;
+  SPI_receive_i = 0;
 
   // Active les broches pour la crossbar:
   XBR0 |= 1 << 1;
@@ -34,23 +35,20 @@ void SPI_init() {
   // Initialisation pin:
   SPI_MOSI = 1;
 
-  // Clock rate:
-  SPI0CKR = 0xFF;
-
   // Interruption SPI enable:
   EIE1 |= 1;
 
   // Active la SPI et mode slave:
-  SPI0CN = 1;
+  SPI0CN = 0x1;
 }
 
 /**
  * Fonction de mise à jour de la SPI
  */
 void SPI_update() {
-  if (SPI0_receive_handle == 1) {
-    SPI_receive_handle_message(SPI0_receive_buffer);
-    SPI0_receive_handle = 0;
+  if (SPI_receive_handle == 1) {
+    SPI_receive_handle_message(SPI_receive_buffer);
+    SPI_receive_handle = 0;
   }
 }
 
@@ -74,23 +72,25 @@ void SPI_interrupt() interrupt 6 {
   if (SPIF == 1) {
     // Récupère le caractère reçu:
     char c = SPI0DAT;
+	  
+	SPI_i++; // temp
 
     // Vérification du caractère:
     if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
-        (c >= '0' && c <= '9') || c == ' ' || c == ':') {
+        (c >= '0' && c <= '9') || c == ' ' || c == ':' || c == '-') {
       // Ajoute le caractère au buffer:
-      SPI0_receive_buffer[SPI0_receive_i] = c;
-      SPI0_receive_i++;
+      SPI_receive_buffer[SPI_receive_i] = c;
+      SPI_receive_i++;
     }
 
     // Si fin de la chaine:
     else if (c == '\r') {
       // Ajoute le caractère de fin:
-      SPI0_receive_buffer[SPI0_receive_i] = '\0';
-      SPI0_receive_i = 0;
+      SPI_receive_buffer[SPI_receive_i] = '\0';
+      SPI_receive_i = 0;
 
       // Interprète le message reçu (dans SPI_update):
-      SPI0_receive_handle = 1;
+      SPI_receive_handle = 1;
     }
 
     // RAZ du flag:
