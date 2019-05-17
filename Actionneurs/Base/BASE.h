@@ -6,14 +6,17 @@
  */
 
 /**
- * Fonction déclenchée toutes les ms pour mettre à jour le déplacement de la base
+ * Fonction déclenchée toutes les ms pour mettre à jour
+ * le déplacement de la base
+ * @return {bit} 0: rien, 1: base arrivée à destination
  */
-void BASE_update();
+bit BASE_update();
 
 /**
  * Etapes pour réaliser le déplacement évolué
+ * @return {bit} 0: rien, 1: base arrivée à destination
  */
-void BASE_deplacement_next_step();
+bit BASE_deplacement_next_step();
 
 /**  "IPO X:valeur_x Y:valeur_y A:angle"
  * Initialisation de la position enregistrée sur la base

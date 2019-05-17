@@ -3,6 +3,8 @@
 #include <string.h>
 #include "../../Communication/UART/UART1.h"
 
+#include "../../Communication/UART/UART0.h" // temp
+
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
@@ -17,7 +19,7 @@
  * Paramètre du Serializer (et de la Base):
  */
 
-float BASE_diametre_roue = 6.0;  // dm
+float BASE_diametre_roue = 0.6;  // dm
 float BASE_ticks_par_tour = 624.0;
 float SRLZR_ticks_par_dm;
 char* response;
@@ -41,6 +43,7 @@ bit SRLZR_sendCommand(char* c) {
   sprintf(command, "%s\r", c);
 
   UART1_send(command);
+  UART0_send(command);
   return 0;
 }
 
@@ -74,8 +77,8 @@ bit SRLZR_sendCommand(char* c) {
  */
 bit SRLZR_init() {
   // SRLZR_stop();
-	
-	SRLZR_resetPID();
+  
+  SRLZR_resetPID();
 
   // Calcul du nombre de ticks des moteurs pour parcourir 1 dm:
   SRLZR_ticks_par_dm = BASE_ticks_par_tour / (BASE_diametre_roue * M_PI);

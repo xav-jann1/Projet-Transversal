@@ -111,6 +111,11 @@ char* HANDLE_Deplacement(Commande* commande) {
   else if (strcmp("SPI", cmd) == 0) {
     hasError = SRLZR_PIDstate();
   }
+	
+	// RES : reset SRLZR
+  else if (strcmp("SPI", cmd) == 0) {
+    hasError = SRLZR_init();
+  }
   
   // Si aucune commande reconnue:
   else
