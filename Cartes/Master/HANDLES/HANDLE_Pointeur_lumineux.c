@@ -102,13 +102,15 @@ char* HANDLE_Pointeur_lumineux(Commande* commande) {
     }
 
     if (!hasError) {
-      if (O == 'H')
+      if (O == 'H') {
+				SERVO_showResponse('H');
         SERVO_pos(angle);
-      else
-        SERVO_pos(-90);
-
+			}
       // Si servomoteur Vertical:
-      if (O == 'V') strcpy(response, "slave");
+      if (O == 'V') {
+				SERVO_showResponse('V');
+				strcpy(response, "slave");
+			}
     }
   }
 

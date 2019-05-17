@@ -13,7 +13,7 @@ bit POINTEUR_allumage_inProgress = 0, POINTEUR_isState_D;
 int POINTEUR_state_counter;
 
 /**
- * Configuration du PWMet de la sortie du pointeur lumineux:
+ * Configuration du PWM et de la sortie du pointeur lumineux:
  * Registre modifiés: PCA0MD, EIE1, EIP1, XBR0, P0MDOUT
  */
 void POINTEUR_init() {
@@ -42,7 +42,7 @@ void POINTEUR_init() {
   XBR0 |= 1 << 3;
 
   // Sortie en Push-Pull:
-  P0MDOUT |= 1 << 6; // crossbar-pin
+  //P0MDOUT |= 1 << 6; // crossbar-pin
 
   // Par défaut, désactive le pointeur:
   POINTEUR_off();

@@ -57,15 +57,17 @@ char* HANDLE_Pointeur_lumineux(Commande* commande) {
           hasError = 1;
       }
     }
-    
+
     // Démarre la séquence d'allumage:
     POINTEUR_allumage(I, D, E, N);
   }
 
   // LS : Fin de l’allumage du pointeur lumineux
   else if (strcmp("LS", cmd) == 0) {
-    if(nbParams == 0) hasError = POINTEUR_stop();
-    else hasError = 1;
+    if (nbParams == 0)
+      hasError = POINTEUR_stop();
+    else
+      hasError = 1;
   }
 
   // LE : Séquence d'allumage prédéfinie
@@ -119,7 +121,7 @@ char* HANDLE_Pointeur_lumineux(Commande* commande) {
     }
 
     if (!hasError) {
-      if (O == 'H')
+      if (O == 'V')
         SERVO_pos(angle);
       else
         SERVO_pos(-90);
