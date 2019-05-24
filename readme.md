@@ -51,6 +51,5 @@ Rassemblement de tous les programmes développés pour respecter le cahier des c
 
 ## PCs
 - [Centrale de commande](./PCs/Centrale_de_commande) : communique avec tous les autres PCs et la carte Master pour donner des ordres
-- [Calcul parcours](./PCs/Calcul_parcours) : calcul le chemin que doit parcourir le robot pour éviter les obstacles 
-
+- [Calculs](./PCs/Calculs) : calcul la position des servos pour viser la cible, le chemin que doit parcourir le robot pour éviter les obstacles
 
