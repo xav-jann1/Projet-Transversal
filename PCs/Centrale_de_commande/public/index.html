@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <script src="./js/socket.io.js"></script>
+  <script src="./js/client.js"></script>
+
+  <title>IHM</title>
+
+  <!-- Custom fonts for this template-->
+
+  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  <link
+    href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+    rel="stylesheet">
+
+  <!-- Custom styles for this template-->
+  <link href="css/ihm.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/p5.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/addons/p5.dom.min.js"></script>
+  <script src="./js/sketch.js"></script>
+
+</head>
+
+<body id="page-top">
+
+  <!-- bannière du haut de page -->
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+      <!-- Sidebar - Brand -->
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+        <div class="sidebar-brand-icon rotate-n-15">
+          <i class="fas fa-laugh-wink"></i>
+        </div>
+        <div class="sidebar-brand-text mx-3">Groupe B1</div>
+      </a>
+
+      <!-- Divider -->
+      <hr class="sidebar-divider my-0">
+
+      <!-- Nav Item - Dashboard -->
+      <li class="nav-item active">
+        <a class="nav-link" href="index.html">
+          <i class="fas fa-fw fa-tachometer-alt"></i>
+          <span>Paramètres</span></a>
+      </li>
+
+      <!-- Divider -->
+      <hr class="sidebar-divider">
+
+      <!-- Heading -->
+      <div class="sidebar-heading">
+        Informations
+      </div>
+
+      <!-- Nav Item - Pages Collapse Menu -->
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true"
+          aria-controls="collapseTwo">
+          <i class="fas fa-fw fa-cog"></i>
+          <span>Terrain</span>
+        </a>
+
+      </li>
+
+    </ul>
+    <!-- End of Sidebar -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+      <!-- Main Content -->
+      <div id="content">
+
+        <!-- Topbar -->
+        <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+          <!-- Sidebar Toggle (Topbar) -->
+          <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+            <i class="fa fa-bars"></i>
+          </button>
+
+          <!-- Topbar Search -->
+          <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+            <div class="input-group">
+              <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
+                aria-label="Search" aria-describedby="basic-addon2">
+              <div class="input-group-append">
+                <button class="btn btn-primary" type="button">
+                  <i class="fas fa-search fa-sm"></i>
+                </button>
+              </div>
+            </div>
+          </form>
+
+
+        </nav>
+        <!-- End of Topbar -->
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">Projet Transversal</h1>
+            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" id="D"
+              onclick="buttonPressed(this.id)"> Démarrage</a>
+            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" id="E"
+              onclick="buttonPressed(this.id)"> Fin</a>
+            <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm" id="Q"
+              onclick="buttonPressed(this.id)"> Arrêt d'Urgence</a>
+          </div>
+
+          <!-- Content Row -->
+          <div class="row">
+
+            <!-- carte MOTEUR -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">MOTEUR</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">Envoi d'un nombre entre 0 et 100</div>
+                      <p></p>
+
+                      <!-- bouton slide bar -->
+                      <div class="slidecontainer">
+                        <input type="range" min="5" max="100" value="20" class="slider" id="vitesse"
+                          onchange="motorPower(this.value)">
+                        <span>Valeur:</span> <span id="f" style="font-weight:bold;color:#4e73df"></span>
+                        <script>var slideCol = document.getElementById("vitesse");
+                          var y = document.getElementById("f");
+                          y.innerHTML = slideCol.value;
+                          slideCol.oninput = function () {
+                            y.innerHTML = this.value;
+                          }</script>
+                        <p></p>
+
+                        <!-- carte Servomoteur-->
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Servomoteur</div>
+                        <div class="row no-gutters align-items-center">
+                          <div class="col-auto">
+                            <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"></div>
+                            <div class="slidecontainer">
+
+                              <FORM>
+                                <INPUT type="radio" name="rotation" id="V"> gauche
+                                <INPUT type="radio" name="rotation" id="H"> droit
+                              </FORM>
+
+                              <label>Angle</label>
+                              <input type="range" min="-90" max="90" value="0" class="slider" id="angle1">
+                              <span>Valeur: </span> <span id="g" style="font-weight:bold;color:#4e73df"></span>
+
+                              <script>var slideV = document.getElementById("angle1");
+                                var w = document.getElementById("g");
+                                w.innerHTML = slideV.value;
+
+                                slideV.oninput = function () {
+                                  w.innerHTML = this.value;
+                                }</script>
+                              <p></p>
+
+                              <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" id=""
+                                onclick="servoCommand()"> Envoyer</a>
+                              <p></p>
+
+                              <!-- carte position-->
+                              <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Position</div>
+                              <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm " id="POS"
+                                onclick="positionCommand(this.id)"> Informations de position</a>
+                              <p></p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+
+
+
+
+            <!-- carte MESURE DISTANCE -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">MESURE DISTANCE</div>
+                      <p></p>
+
+                      <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm " id="MOU"> Mesure
+                        Avant</a>
+                      <p></p>
+                      <span>Valeur:</span> <span id="av" style="font-weight:bold;color:#f6c23e"></span>
+                      <script>var mesure_av = document.getElementById("MOU");
+                        var avant = document.getElementById("av");
+                        avant.innerHTML = mesure_av.value;
+                        mesure_av.oninput = function () {
+                          avant.innerHTML = this.value;
+                        }
+
+                      </script>
+                      <p></p>
+
+                      <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm " id="MOU1"> Mesure
+                        Arrière</a>
+                      <p></p>
+                      <span>Valeur:</span> <span id="ar" style="font-weight:bold;color:#f6c23e"></span>
+
+
+                      <script>var mesure_ar = document.getElementById("MOU1");
+                        var arriere = document.getElementById("ar");
+                        arriere.innerHTML = mesure_ar.value;
+
+                        mesure_ar.oninput = function () {
+                          arriere.innerHTML = this.value;
+                        }
+
+                      </script>
+                      <p></p>
+
+                      <!-- mesure courant-->
+                      <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">MESURE COURANT</div>
+                      <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm " id="MI"
+                        onclick="courantMeasure(this.id)"> Mesure Courant</a>
+                      <p></p>
+
+
+                      <!-- mesure energie-->
+                      <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">MESURE ENERGIE</div>
+                      <p></p>
+                      <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm " id="ME"
+                        onclick="energieMeasure(this.id)"> Mesure Energie</a>
+                      <p></p>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- carte DEPLACEMENT -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-success text-uppercase mb-1">DEPLACEMENT</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">Boutons de déplacement</div>
+
+                      <!-- bouton de direction du robot-->
+                      <div>
+                        <a href="#" class="d-none d-sm-block btn btn-sm btn-success shadow-sm button_top" id="A "
+                          onclick="moveFoward(this.id)">
+                          <div id="triangle_top"></div>
+                        </a>
+                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm" id="RG"
+                          onclick="buttonPressed(this.id)">
+                          <div id="triangle_left"></div>
+                        </a>
+
+                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm " id="S"
+                          onclick="buttonPressed(this.id)"> STOP</a>
+                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm " id="RD"
+                          onclick="buttonPressed(this.id)">
+                          <div id="triangle_right"></div>
+                        </a>
+                        <a href="#" class="d-none d-sm-block btn btn-sm btn-success shadow-sm " id="B"
+                          onclick="moveBackward(this.id)">
+                          <div id="triangle_bottom">
+                          </div>
+                        </a>
+                      </div>
+
+                      <!-- partie rotation du déplacement -->
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">Rotation</div>
+
+                      <div>
+                        <label> Rotation de 90° à : </label>
+                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm " id="RG"
+                          onclick="buttonPressed(this.id)"> Gauche</a>
+                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm " id="RD"
+                          onclick="buttonPressed(this.id)"> Droite</a>
+                        <p></p>
+                        <label>Rotation de 180° à :</label>
+                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm " id="RC G"
+                          onclick="buttonPressed(this.id)"> Gauche</a>
+                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm " id="RC D"
+                          onclick="buttonPressed(this.id)"> Droite</a>
+                      </div>
+
+                      <!-- choix complet du type de rotation -->
+                      <label>Choix complet de la rotation:</label>
+                      <div>
+                        <input type="range" min="-90" max="90" value="0" class="slider" id="angle2">
+                        <span>Valeur: </span> <span id="r" style="font-weight:bold;color:#1cc88a"></span>
+
+                        <script>var slideR = document.getElementById("angle2");
+                          var rot = document.getElementById("r");
+                          rot.innerHTML = slideR.value;
+
+                          slideR.oninput = function () {
+                            rot.innerHTML = this.value;
+                          }</script>
+                        <p></p>
+
+                        <FORM>
+                          <INPUT type="radio" name="rotation" id="rot_gauche"> gauche
+                          <INPUT type="radio" name="rotation" id="rot_droit"> droit
+                        </FORM>
+                        <p></p>
+                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm " id=""
+                          onclick="rotationParam()"> Envoyer</a>
+                      </div>
+
+
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <!-- Carte Deplacement par coordonnées -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-info text-uppercase mb-1">DEPLACEMENt</div>
+                      <!-- deplacement de la base roulante par coordonnées -->
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">Déplacement du robot par coordonnées</div>
+
+                      <label>Choix du x</label>
+                      <input type="range" min="-99" max="99" value="0" class="slider" id="valeur_x">
+                      <span>Valeur: </span> <span id="val_x" style="font-weight:bold;color:#36b9cc"></span>
+                      <script>var slidex = document.getElementById("valeur_x");
+                        var val_x = document.getElementById("val_x");
+                        val_x.innerHTML = slidex.value;
+
+                        slidex.oninput = function () {
+                          val_x.innerHTML = this.value;
+                        }</script>
+                      <p></p>
+
+
+                      <label>Choix du y</label>
+                      <input type="range" min="-99" max="99" value="0" class="slider" id="valeur_y">
+                      <span>Valeur: </span> <span id="val_y" style="font-weight:bold;color:#36b9cc"></span>
+                      <script>var slidey = document.getElementById("valeur_y");
+                        var val_y = document.getElementById("val_y");
+                        val_y.innerHTML = slidey.value;
+
+                        slidey.oninput = function () {
+                          val_y.innerHTML = this.value;
+                        }</script>
+                      <p></p>
+
+
+                      <label>Choix de l'angle</label>
+                      <input type="range" min="-180" max="180" value="0" class="slider" id="valeur_angle">
+                      <span>Valeur: </span> <span id="val_a" style="font-weight:bold;color:#36b9cc"></span>
+                      <script>var slideAngle = document.getElementById("valeur_angle");
+                        var val_a = document.getElementById("val_a");
+                        val_a.innerHTML = slideAngle.value;
+
+                        slideAngle.oninput = function () {
+                          val_a.innerHTML = this.value;
+                        }</script>
+                      <p></p>
+
+                      <div>
+                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-info shadow-sm " id=""
+                          onclick="moveCoords()"> Envoyer</a>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <!-- carte POINTEUR -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Pointeur</div>
+                      <div class="row no-gutters align-items-center">
+                        <div class="col-xl-12">
+
+                          <!-- deux boutons allumage et eteindre -->
+                          <div class="h5 mb-0 font-weight-bold text-gray-800"></div>
+                          <p></p>
+                          <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm " id="L"
+                            onclick="buttonPressed(this.id)"> Allumage</a>
+                          <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm " id="LS"
+                            onclick="buttonPressed(this.id)"> Eteindre</a>
+                          <p></p>
+
+                          <!-- choix complet des paramètres -->
+
+                          <div class="h5 mb-0 font-weight-bold text-gray-800">Choix de motif</div>
+                          <form>
+                            <div>
+                              <label for="uname"> Nombre de répétitions entre 1 et 99</label>
+                              <input type="range" min="1" max="99" value="1" class="slider" id="N">
+                              <span>Valeur:</span> <span id="motife" style="font-weight:bold;color:#e74a3b"></span>
+                              <script>var nbr_motif = document.getElementById("N");
+                                var motif = document.getElementById("motife");
+                                motif.innerHTML = nbr_motif.value;
+
+                                nbr_motif.oninput = function () {
+                                  motif.innerHTML = this.value;
+                                }</script>
+                              <p></p>
+                            </div>
+                            <p></p>
+
+                            <div>
+                              <label for="uname"> Intensité entre 0 et 100</label>
+                              <input type="range" min="1" max="100" value="1" class="slider" id="Ia">
+                              <span>Valeur:</span> <span id="intensit" style="font-weight:bold;color:#e74a3b"></span>
+                              <script>var mesure_intensit = document.getElementById("Ia");
+                                var inte = document.getElementById("intensit");
+                                inte.innerHTML = mesure_intensit.value;
+
+                                mesure_intensit.oninput = function () {
+                                  inte.innerHTML = this.value;
+                                }</script>
+                              <p></p>
+                            </div>
+
+
+                            <div>
+                              <label for="uname"> Durée entre 0.1s et 9.9s</label>
+                              <input type="range" min="1" max="99" value="1" class="slider" id="D1">
+                              <span>Valeur:</span> <span id="dureee" style="font-weight:bold;color:#e74a3b"></span>
+                              <script>var mesure_duree = document.getElementById("D1");
+                                var du = document.getElementById("dureee");
+                                du.innerHTML = mesure_duree.value;
+
+                                mesure_duree.oninput = function () {
+                                  du.innerHTML = this.value;
+                                }</script>
+                              <p></p>
+                            </div>
+
+                            <p></p>
+
+                            <div>
+                              <label for="uname"> Temps éteins entre 0.1 et 9.9 secondes</label>
+                              <input type="range" min="1" max="100" value="1" class="slider" id="E1">
+                              <span>Valeur:</span> <span id="eteint" style="font-weight:bold;color:#e74a3b"></span>
+                              <script>var temps_etein = document.getElementById("E1");
+                                var etein = document.getElementById("eteint");
+                                etein.innerHTML = temps_etein.value;
+
+                                temps_etein.oninput = function () {
+                                  etein.innerHTML = this.value;
+                                }</script>
+                              <p></p>
+                            </div>
+                            <p></p>
+
+                            <div>
+                              <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm " id=""
+                                onclick="pointeurParam()"> Envoyer</a>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- carte  signaux sonores -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">SIGNAUX SONORES</div>
+                      <p></p>
+                      <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm " id=""
+                        onclick="signalDefault()"> Configuration défault</a>
+                      <p></p>
+
+
+                      <!-- acquisition signaux sonores-->
+
+                      <label> Mesure en centaine de milliseconde </label>
+                      <input type="range" min="1" max="99" value="1" class="slider" id="ASS"
+                        onchange="acquisitionTime(this.value)">
+                      <span>Valeur: </span> <span id="A" style="font-weight:bold;color:#4e73df"></span>
+
+                      <script>var slideA = document.getElementById("ASS");
+                        var z2 = document.getElementById("A");
+                        z2.innerHTML = slideA.value;
+
+                        slideA.oninput = function () {
+                          z2.innerHTML = this.value;
+                        }</script>
+                      <p></p>
+
+                      <!-- modification des parametres sonores-->
+
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">Choix des paramètres </div>
+                      <p></p>
+                      <label>Choix du code de fréquence</label>
+                      <input type="range" min="1" max="99" value="1" class="slider" id="code_frequence">
+                      <span>Valeur: </span> <span id="val_freq" style="font-weight:bold;color:#4e73df"></span>
+                      <script>var slidef = document.getElementById("code_frequence");
+                        var val_freq = document.getElementById("val_freq");
+                        val_freq.innerHTML = slidef.value;
+
+                        slidef.oninput = function () {
+                          val_freq.innerHTML = this.value;
+                        }</script>
+                      <p></p>
+
+                      <label>Durée du son en dizaine de ms</label>
+                      <input type="range" min="1" max="99" value="1" class="slider" id="duree_son">
+                      <span>Valeur: </span> <span id="val_son" style="font-weight:bold;color:#4e73df"></span>
+                      <script>var slideS = document.getElementById("duree_son");
+                        var val_son = document.getElementById("val_son");
+                        val_son.innerHTML = slideS.value;
+
+                        slideS.oninput = function () {
+                          val_son.innerHTML = this.value;
+                        }</script>
+                      <p></p>
+
+                      <label>Durée silence</label>
+                      <input type="range" min="1" max="99" value="1" class="slider" id="duree_silence">
+                      <span>Valeur: </span> <span id="val_silence" style="font-weight:bold;color:#4e73df"></span>
+                      <script>var slideSilence = document.getElementById("duree_silence");
+                        var val_silence = document.getElementById("val_silence");
+                        val_silence.innerHTML = slideSilence.value;
+
+                        slideSilence.oninput = function () {
+                          val_silence.innerHTML = this.value;
+                        }</script>
+                      <p></p>
+
+                      <label>Nombres de Bips</label>
+                      <input type="range" min="1" max="99" value="1" class="slider" id="nombres_bips">
+                      <span>Valeur: </span> <span id="val_bipss" style="font-weight:bold;color:#4e73df"></span>
+                      <script>var slideBips = document.getElementById("nombres_bips");
+                        var val_bipss = document.getElementById("val_bipss");
+                        val_bipss.innerHTML = slideBips.value;
+
+                        slideBips.oninput = function () {
+                          val_bipss.innerHTML = this.value;
+                        }</script>
+                      <p></p>
+
+
+                      <div>
+                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm " id=""
+                          onclick="generationSon()"> Envoyer</a>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <!-- carte Image -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Acquisition visuelle</div>
+                      <p></p>
+
+                      <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm " id=""
+                        onclick="defaultVision()"> Paramètres par défauts </a>
+                      <p></p>
+
+
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">Choix des paramètres </div>
+                      <p></p>
+
+                      <label>Mode ? unique, continu, déterminé</label>
+
+
+                      <FORM>
+                        <INPUT type="radio" name="rotation" id="O1"> O
+                        <INPUT type="radio" name="rotation" id="S1"> S
+                        <INPUT type="radio" name="rotation" id="L1"> L
+                      </FORM>
+                      <p></p>
+
+
+                      <div>
+                        <label>Durée d'allumage pas de 100ms</label>
+                        <input type="range" min="1" max="99" value="1" class="slider" id="duree_allumage">
+                        <span>Valeur: </span> <span id="val_duree" style="font-weight:bold;color:#f6c23e"></span>
+                        <script>var slideDuree = document.getElementById("duree_allumage");
+                          var val_duree = document.getElementById("val_duree");
+                          val_duree.innerHTML = slideDuree.value;
+
+                          slideDuree.oninput = function () {
+                            val_duree.innerHTML = this.value;
+                          }</script>
+                        <p></p>
+
+
+                        <label>Nombres de Bips</label>
+                        <input type="range" min="1" max="255" value="1" class="slider" id="nbr_prise">
+                        <span>Valeur: </span> <span id="val_prise" style="font-weight:bold;color:#f6c23e"></span>
+                        <script>var slidePrise = document.getElementById("nbr_prise");
+                          var val_bips = document.getElementById("val_prise");
+                          val_prise.innerHTML = slidePrise.value;
+
+                          slidePrise.oninput = function () {
+                            val_prise.innerHTML = this.value;
+                          }</script>
+                        <p></p>
+
+
+                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm " id=""
+                          onclick="visuelParam()"> Envoyer</a>
+                        <p></p>
+
+
+                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm " id="SPH"
+                          onclick="buttonPressed(this.id)"> Arrêt de la prise continue</a>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- carte CANVA -->
+            <div class=" mb-4">
+              <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Canva</div>
+                      <div class="row no-gutters align-items-center">
+
+                        <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"></div>
+
+
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1" id="sketch-holder">
+                          <p></p>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+</body>
+
+</html>
