@@ -9,13 +9,7 @@ Programmes utilisés sur chaque carte du projet :
 - [Slave](./Slave) : 8051
   - **Communications** : [SPI](../Communication/SPI), [Radio](../Communication/Radio)
   - **Actionneurs** : [Serializer](../Actionneurs/Serializer), [Servomoteur](../Actionneurs/Servomoteur), [Pointeur lumineux](../Actionneurs/Pointeur_lumineux)
-  - **Capteurs** : [Caméra](../Capteurs/Caméra)
+  - **Capteurs** : [Photo](../Capteurs/Photo)
 
-- [STM32](./STM32) :
-  - **Communications** : [???](../Communication/???), [Bluetooth](../Communication/Bluetooth), [SD](../Communication/SD)
-  - **Actionneurs** : [Haut-parleur](../Actionneurs/Haut-parleur)
-  - **Capteurs** : [Microphone](../Capteurs/Microphone)
 
-- [FPGA](./FPGA) :
-  - **Communication** : [Radio](../Communication/Radio)
-  - **Capteurs** : [Cible](../Capteurs/Cible)
+Le dossier [Ressources](./Ressources) contient des programmes pour configurer et gérer le temps sur `8051`.

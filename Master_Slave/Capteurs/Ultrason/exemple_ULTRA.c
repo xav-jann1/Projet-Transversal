@@ -15,11 +15,11 @@ void main() {
     
     // Si mesure réalisée:
     if(ULTRA_update()) {
-      /*int mesure = ULTRA_getMesure();
+      int mesure = ULTRA_getMesure();
 
       char* string;
       sprintf(string, "KOB XX:%d\r\n>", mesure);
-      UART0_send(string);*/
+      UART0_send(string);
     }
     TIME_wait(1000);
   }

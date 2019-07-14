@@ -244,20 +244,20 @@ bit BASE_rotate(char sens, unsigned int valeur) {
  * Effectue une rotation 'optimisée' de 90° à gauche
  * @return {bit} 0: ok, 1: error
  */
-bit BASE_rotate90Left() { return BASE_rotate('G', 90); }
+bit BASE_rotate90Left() { return BASE_rotate('G', 100); }
 
 /**  "RD"
  * Effectue une rotation 'optimisée' de 90° à droite
  * @return {bit} 0: ok, 1: error
  */
-bit BASE_rotate90Right() { return BASE_rotate('D', 90); }
+bit BASE_rotate90Right() { return BASE_rotate('D', 100); }
 
 /**  "RC [D/G]"
  * Effectue une rotation 'optimisée' complète à droite ou à gauche
  * @param {char} sens : 'G' ou 'D', sens de la rotation (par défaut droite)
  * @return {bit} 0: ok, 1: error
  */
-bit BASE_fullRotation(char sens) { return BASE_rotate(sens, 170); }
+bit BASE_fullRotation(char sens) { return BASE_rotate(sens, 160); }
 
 /**  "G X:valeur_x Y:valeur_y A:angle"
  * Déplace la base à des coordonnées relatives

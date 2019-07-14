@@ -71,6 +71,9 @@ void main(void) {
 
       // Mise à jour des périphériques:
       RTOS_100ms();
+			
+			// Détection:
+			//ULTRA_mesure_avant();
     }
   }
 }
@@ -105,6 +108,7 @@ void RTOS() {
 
     char string[20];
     sprintf(string, "KOB XX:%d\r\n>", mesure);
+		//if (mesure > 5 && mesure < 20) SRLZR_stop();
     UART0_send(string);
   }
 }
