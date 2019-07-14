@@ -95,7 +95,7 @@ function moveCoords() {
   var val2 = document.getElementById("valeur_y").value;
   var val3 = document.getElementById("valeur_angle").value;
 
-  let command = `G X:${val1} Y:${val2} A:${val3}`;
+  let command = `G X:${Math.floor(val1/10)} Y:${Math.floor(val2/10)} A:${val3}`;
   sendCommand(command);
 }
 

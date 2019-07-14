@@ -1,5 +1,6 @@
 //const serial = require('./serial.js');
 
+//const IP_CALCUL = 'http://192.168.137.151:3000';
 const IP_CALCUL = 'http://localhost:3001';
 
 // Scripts:

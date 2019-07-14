@@ -9,7 +9,7 @@ function preload() {
 
 function setup() {
   console.log("Démarrage")
-  let canvas = createCanvas(700, 500);
+  let canvas = createCanvas(750, 500);
   background(51);
 
   // Move the canvas so it’s inside our <div id="sketch-holder">.
@@ -72,11 +72,11 @@ function setup() {
     scale(1, -1);
 
     // Positionnement du terrain par rapport à l'affichage:
-    translate(150, -400);
+    //translate(200, -300);
+    translate(200, -350);
 
     stroke('#0091EA');
     strokeWeight(2);
-    rect(-250, -250, 100, 100);
     for (let vec of trajectoire) {
       line(x, y, x + vec.x, y - vec.y);
       x += vec.x;
@@ -119,7 +119,10 @@ function drawTerrain() {
   scale(1, -1);
 
   // Positionnement du terrain par rapport à l'affichage:
-  translate(150, -400);
+  let [x_trans, y_trans] = getTranslation(terrain);
+  //translate(x_trans, -y_trans);
+  //translate(150, -400);
+  translate(200, -350);
 
   // Affichage de la grille:
   showGrid(25, 25);
@@ -154,7 +157,6 @@ function drawTerrain() {
 
   // Affiche les points:
   drawPoints();
-
 }
 
 function draw() { }
@@ -165,6 +167,7 @@ function drawPoints() {
   drawPoint(chemin.depart, 'lime');
 
   // Arrivée:
+  console.log("arrivée:", chemin.arrivee);
   drawPoint(chemin.arrivee, 'orangered');
 
   // Etapes:
@@ -262,4 +265,24 @@ function showGrid(w, h) {
   for (let y = -height; y < height; y += h) {
     line(-width, y, width, y);
   }
+}
+
+function getTranslation(terrain) {
+  let x_border_l = 0, x_border_r = 0;
+  let y_border_l = 0, y_border_r = 0;
+  for (let point of terrain.terrain_evolution) {
+    let x = point.point.x;
+    let y = point.point.y;
+    if (x < x_border_l) x_border_l = x;
+    if (x > x_border_r) x_border_r = x;
+    if (y < y_border_l) y_border_l = y;
+    if (y > y_border_r) y_border_r = y;
+  }
+
+  console.log(x_border_l, x_border_r, y_border_l, y_border_r);
+  console.log(x_border_l - x_border_r, y_border_l - y_border_r);
+  let x_trans = (x_border_r - x_border_l) / 2;
+  let y_trans = (y_border_r - y_border_l) / 2;
+
+  return [x_trans, y_trans];
 }
