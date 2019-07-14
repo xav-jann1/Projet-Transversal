@@ -5,6 +5,7 @@ const IP_CALCUL = 'http://localhost:3001';
 // Scripts:
 const robot = require('./robot.js');
 const utils = require('./utils.js');
+const serial = require('./serial.js');
 
 // Librairies:
 const request = require('request-promise');
@@ -12,7 +13,7 @@ const express = require('express');
 const app = express();
 let server = app.listen(3000);
 app.use(express.static('./public'));
-console.log("Socket server is running. localhost: 3000")
+console.log("Socket server is running: http://localhost:3000")
 
 let socket = require('socket.io')
 let io = socket(server);
@@ -20,14 +21,12 @@ let io = socket(server);
 io.sockets.on('connection', socket => {
   console.log('connection:', socket.id);
   socket.on('IHM', data => {
-    //interpret(data);
-    //serial.send(data.cmd);
-    console.log(data);
+    serial.send(data);
+    console.log(`Envoie la commande: '${data}'`);
   });
 
   socket.on('trajectoire', async (data) => {
     console.log('!!! Calcul trajectoire en cours !!!');
-    socket.emit('trajectoire', 'test');
 
     let trajectoire = await getTrajectoire(data);
 
@@ -50,6 +49,9 @@ io.sockets.on('connection', socket => {
       robot.setServo('H', H);
       await utils.wait(2);
       robot.setServo('V', V);
+
+      // Envoie le résultat:
+      socket.emit('pointeur', pos);
     } else console.log('Request Response Error: H et V ne sont pas des entiers');
   });
 

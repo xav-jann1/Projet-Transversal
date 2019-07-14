@@ -161,9 +161,9 @@ function visuelParam() {
   var val1;
   var val2 = document.getElementById("duree_allumage").value;
   var val3 = document.getElementById("nbr_prise").value;
-  if (document.getElementById("O1").checked == true) val1 = "O1";
-  if (document.getElementById("L1").checked == true) val1 = 'L1';
-  else val1 = "S1";
+  if (document.getElementById("O1").checked == true) val1 = "O";
+  if (document.getElementById("L1").checked == true) val1 = 'L';
+  else val1 = "S";
 
   let command = `PPH ${val1} E:${val2} N:${val3}`
   sendCommand(command);

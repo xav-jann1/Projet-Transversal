@@ -20,6 +20,7 @@ function setup() {
   })
   canvas.dragLeave(() => {
     background(51);
+    showText();
   })
 
   let filesLoaded = [];
@@ -35,6 +36,8 @@ function setup() {
       chemin = JSON.parse(atob(file.data.split('base64,')[1]));
       if (!filesLoaded.includes('Base')) filesLoaded.push('Base');
     }
+
+    showText();
 
     console.log(filesLoaded);
     console.log(filesLoaded.includes('Environnement'), filesLoaded.includes('Base'))
@@ -57,11 +60,11 @@ function setup() {
 
   socket.on('trajectoire', trajectoire => {
 
-    console.log(trajectoire);
+    //console.log(trajectoire);
 
     let x = chemin.depart.coordonnees.x;
     let y = chemin.depart.coordonnees.y;
-    console.log(x, y);
+    //console.log(x, y);
 
     push();
 
@@ -83,12 +86,29 @@ function setup() {
     drawPoints();
 
     pop();
+
+    // Modification des points pour correspondre aux déplacements:
+    let trajectoire_corrige = trajectoire;
+    if (chemin.depart.angle == 0) trajectoire_corrige = trajectoire.map(vec => ({ x: vec.y, y: vec.x }));
+    else if (chemin.depart.angle == 90) trajectoire_corrige = trajectoire.map(vec => ({ x: vec.x, y: -vec.y }));
+
+    console.log("Coordonnées pour déplacer la base: G X:_ Y:_ A:0");
+    console.log(trajectoire_corrige)
   });
 
   socket.on('pointeur', pos => {
-    console.log(pos);
+    console.log('Position du pointeur:', pos);
   });
 
+  showText();
+
+
+  function showText() {
+    // Texte Glisser-Déposer:
+    fill(255); textSize(20);
+    textAlign(CENTER, CENTER);
+    text(`Glisser-Déposer les fichiers\npour les charger... (${filesLoaded.length}/2)`, width / 2, height / 2);
+  }
 }
 
 
