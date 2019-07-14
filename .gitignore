@@ -50,3 +50,10 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# Autre
+Archives/
+.vscode/
+node_modules/
+Master_Slave_Microvision/
+STM32/
